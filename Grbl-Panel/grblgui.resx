@@ -183,6 +183,20 @@
   <metadata name="GrblSettingsBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>839, 15</value>
   </metadata>
+  <data name="tbProbePlateThickness.ToolTip" xml:space="preserve">
+    <value>This is the probe plate thickness, it will be automatically
+subtracted from/added to the position (depending on the
+probing direction) after a successful probing cycle.
+
+Pay attention to your metric/imperial setting!</value>
+  </data>
+  <data name="tbProbeToolDiameter.ToolTip" xml:space="preserve">
+    <value>This is the probe tool diameter, half of it will be automatically
+subtracted from/added to the position (depending on the
+probing direction) after a successful probing cycle.
+
+Pay attention to your metric/imperial setting!</value>
+  </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>60</value>
   </metadata>

@@ -98,5 +98,20 @@
     <Setting Name="ConnectionType" Type="System.String" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
+    <Setting Name="ProbePlateThickness" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1.48</Value>
+    </Setting>
+    <Setting Name="ProbePullOff" Type="System.String" Scope="User">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="ProbeDistance" Type="System.String" Scope="User">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="ProbeFeed" Type="System.String" Scope="User">
+      <Value Profile="(Default)">25</Value>
+    </Setting>
+    <Setting Name="ProbeToolDiameter" Type="System.String" Scope="User">
+      <Value Profile="(Default)">3.175</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
