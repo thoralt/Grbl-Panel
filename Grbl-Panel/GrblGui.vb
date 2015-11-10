@@ -5,15 +5,16 @@ Imports System.Threading.Thread
 
 Public Class GrblGui
 
-    Public WithEvents grblPort As GrblIF    ' Public so that the timer thread can see grblPort
-    Private status As GrblStatus            ' For status polling
-    Private jogging As GrblJogging          ' for jogging control
-    Private position As GrblPosition        ' for machine and work positioning
-    Public Shared gcode As GrblGcode        ' For processing gcode file
-    Public gcodeview As GrblGcodeView       ' for display of gcode
-    Public offsets As GrblOffsets           ' for handling of offsets
-    Public state As GrblState              ' to track gcode state
-    Public settings As GrblSettings         ' To handle Settings related ops
+    Public WithEvents grblPort As GrblIF      ' Public so that the timer thread can see grblPort
+    Public WithEvents grblQueue As GrblQueue  ' This queue object holds and processes all pending commands
+    Private status As GrblStatus              ' For status polling
+    Private jogging As GrblJogging            ' for jogging control
+    Private position As GrblPosition          ' for machine and work positioning
+    Public Shared gcode As GrblGcode          ' For processing gcode file
+    Public gcodeview As GrblGcodeView         ' for display of gcode
+    Public offsets As GrblOffsets             ' for handling of offsets
+    Public state As GrblState                 ' to track gcode state
+    Public settings As GrblSettings           ' To handle Settings related ops
 
     Public Sub myhandler(ByVal sender As Object, args As UnhandledExceptionEventArgs)
         ' Show exception in usable manner
@@ -43,12 +44,13 @@ Public Class GrblGui
         SwitchSides(cbSettingsLeftHanded.Checked)
 
         grblPort = New GrblIF
+        grblQueue = New GrblQueue(grblPort)
         settings = New GrblSettings(Me)
         status = New GrblStatus(Me)
         jogging = New GrblJogging(Me)
         position = New GrblPosition(Me)
         gcode = New GrblGcode(Me)
-        gcodeview = New GrblGcodeView(lvGcode)
+        gcodeview = New GrblGcodeView(lvGcode, grblQueue, tbGCodeMessage, TransmissionProgress, GrblBufferLevel)
         offsets = New GrblOffsets(Me)
         state = New GrblState(Me)
 
@@ -217,7 +219,7 @@ Public Class GrblGui
                     Sleep(tbSettingsStartupDelay.Text * 1000)             ' Give Grbl time to wake up from Reset
                     statusPrompt("Start")
 
-                    RaiseEvent Connected("Connected")      ' tell everyone of the happy event
+                    RaiseEvent connected("Connected")      ' tell everyone of the happy event
                 End If
             Case "Disconnect"
                 ' it must be a disconnect
@@ -238,7 +240,7 @@ Public Class GrblGui
                 state.EnableState(False)
                 settings.EnableState(False)
 
-                RaiseEvent Connected("Disconnected")
+                RaiseEvent connected("Disconnected")
                 Return
         End Select
     End Sub
@@ -330,6 +332,5 @@ Public Class GrblGui
 
     ' Raised when we succesfully connected to Grbl
     Public Event Connected(ByVal msg As String)
-
 
 End Class

@@ -39,6 +39,8 @@ Partial Class GrblGui
         Public Function loadGCodeFile(ByVal file As String) As Boolean
             Dim data As String
 
+            _gui.lvGcode.BeginUpdate()
+
             ' Start from clean slate
             resetGcode(True)
             ' Load the file, count lines
@@ -58,6 +60,8 @@ Partial Class GrblGui
             If Not IsNothing(_inputfh) Then
                 _inputfh.Close()
             End If        ' Issue #19
+
+            _gui.lvGcode.EndUpdate()
 
             Return True
 
@@ -93,7 +97,10 @@ Partial Class GrblGui
             runMode = True
             sendAnotherLine = True
             _gui.gcodeview.fileMode = True
-            _gui.processLineEvent("")              ' Prime the pump
+
+            '_gui.processLineEvent("")              ' Prime the pump
+            _gui.grblQueue.resumeSending()
+
 
         End Sub
 
@@ -121,6 +128,7 @@ Partial Class GrblGui
             ' Pause the file send
             _sendAnotherLine = False
             _runMode = False
+            _gui.grblQueue.pauseSending()
         End Sub
 
         Public Sub sendGCodeFileResume()
@@ -129,7 +137,7 @@ Partial Class GrblGui
             _runMode = True
             _gui.gcodeview.fileMode = True
             _gui.processLineEvent("")              ' Prime the pump again
-
+            _gui.grblQueue.resumeSending()
         End Sub
         Public Sub sendGCodeFileStop()
 
@@ -196,6 +204,7 @@ Partial Class GrblGui
                 _lineCount = value
             End Set
         End Property
+
 #End Region
 
         Private Sub resetGcode(ByVal fullstop As Boolean)
@@ -224,16 +233,214 @@ Partial Class GrblGui
         ' GrblGui owns the lvGcode control but this class manages its content
 
         Private _lview As ListView
+        Private _message As TextBox
+        Private _progress As ProgressBar
+        Private _bufferLevel As ProgressBar
+        Private WithEvents _queue As GrblQueue
         Private _filemode As Boolean = False ' True if in File Send mode
+        Private _pausedItem As Integer = -1
 
-        Public Sub New(ByRef view As ListView)
+        Property ignoreScreenUpdate As Boolean
+            Get
+                Return _ignoreScreenUpdate
+            End Get
+            Set(value As Boolean)
+                _ignoreScreenUpdate = value
+                If value = False Then _lview.Update()
+            End Set
+        End Property
+        Private _ignoreScreenUpdate As Boolean = False
+
+        Public Sub New(ByRef view As ListView, ByRef queue As GrblQueue, ByRef message As TextBox, progress As ProgressBar, bufferLevel As ProgressBar)
             _lview = view
+            _queue = queue
+            _message = message
+            _progress = progress
+            _bufferLevel = bufferLevel
         End Sub
+
+        ''' <summary>
+        ''' 
+        ''' </summary>
         Public Sub Clear()
             _lview.Items.Clear()
             _filemode = False
             _lview.Update()
+            _queue.Clear()
+            _pausedItem = -1
+            _progress.Value = 0
         End Sub
+
+#Region "GrblQueue Events"
+
+        ''' <summary>
+        ''' Gets called whenever the queue finds a gcode comment "(... comment text ...)",
+        ''' sets the content of text box tbGCodeMessage
+        ''' the last queued command.
+        ''' </summary>
+        Public Delegate Sub QueueGrblBufferLevel_Delegate(level As Integer)
+        Private Sub QueueGrblBufferLevel(level As Integer) Handles _queue.QueueGrblBufferLevel
+            If _bufferLevel.InvokeRequired Then
+                ' we need to cross thread this callback
+                Dim _delegate As New QueueGrblBufferLevel_Delegate(AddressOf QueueGrblBufferLevel)
+                _bufferLevel.BeginInvoke(_delegate, New Object() {level})
+            Else
+                _bufferLevel.Value = level
+            End If
+        End Sub
+
+        ''' <summary>
+        ''' Gets called whenever the queue finds a gcode comment "(... comment text ...)",
+        ''' sets the content of text box tbGCodeMessage
+        ''' the last queued command.
+        ''' </summary>
+        Public Delegate Sub QueueProgress_Delegate(progressValue As Integer)
+        Private Sub QueueProgress(progressValue As Integer) Handles _queue.QueueProgress
+            If _progress.InvokeRequired Then
+                ' we need to cross thread this callback
+                Dim _delegate As New QueueProgress_Delegate(AddressOf QueueProgress)
+                _progress.BeginInvoke(_delegate, New Object() {progressValue})
+            Else
+                _progress.Value = progressValue
+            End If
+        End Sub
+
+        ''' <summary>
+        ''' Gets called whenever the queue finds a gcode comment "(... comment text ...)",
+        ''' sets the content of text box tbGCodeMessage
+        ''' the last queued command.
+        ''' </summary>
+        Public Delegate Sub QueueComment_Delegate(comment As String)
+        Private Sub QueueComment(comment As String) Handles _queue.QueueComment
+            If _message.InvokeRequired Then
+                ' we need to cross thread this callback
+                Dim _delegate As New QueueComment_Delegate(AddressOf QueueComment)
+                _message.BeginInvoke(_delegate, New Object() {comment})
+            Else
+                _message.Text = comment
+            End If
+        End Sub
+
+        ''' <summary>
+        ''' Gets called whenever the queue is paused, sets the state of
+        ''' the current command in the GUI.
+        ''' the last queued command.
+        ''' </summary>
+        Public Delegate Sub QueueResuming_Delegate(item As GrblQueueItem)
+        Private Sub QueueResuming(item As GrblQueueItem) Handles _queue.QueueResuming
+            If _lview.InvokeRequired Then
+                ' we need to cross thread this callback
+                Dim _delegate As New QueueResuming_Delegate(AddressOf QueueResuming)
+                _lview.BeginInvoke(_delegate, New Object() {item})
+            Else
+                ' mark the active command as executing
+                If item.Index > 0 AndAlso item.Index < _lview.Items.Count() Then
+                    _pausedItem = -1
+                    _lview.Items(item.Index).BackColor = Color.Orange
+                    _lview.Items(item.Index).SubItems(0).Text = "exec"
+                    _lview.Update()
+                End If
+            End If
+        End Sub
+
+        ''' <summary>
+        ''' Gets called whenever the queue is paused, sets the state of
+        ''' the current command in the GUI.
+        ''' </summary>
+        Public Delegate Sub QueuePaused_Delegate(item As GrblQueueItem)
+        Private Sub QueuePaused(item As GrblQueueItem) Handles _queue.QueuePaused
+            If _lview.InvokeRequired Then
+                ' we need to cross thread this callback
+                Dim _delegate As New QueuePaused_Delegate(AddressOf QueuePaused)
+                _lview.BeginInvoke(_delegate, New Object() {item})
+            Else
+                ' mark the active command as paused
+                If item.Index > 0 AndAlso item.Index < _lview.Items.Count() Then
+                    _pausedItem = item.Index
+                    _lview.Items(_pausedItem).BackColor = Color.LightBlue
+                    _lview.Items(_pausedItem).SubItems(0).Text = "pause"
+                    _lview.Update()
+                End If
+            End If
+        End Sub
+
+        ''' <summary>
+        ''' Gets called whenever the queue finished sending and grbl acknowledged
+        ''' the last queued command.
+        ''' </summary>
+        Public Delegate Sub QueueFinished_Delegate()
+        Private Sub QueueFinished() Handles _queue.QueueFinished
+            If _lview.InvokeRequired Then
+                ' we need to cross thread this callback
+                Dim _delegate As New QueueFinished_Delegate(AddressOf QueueFinished)
+                _lview.BeginInvoke(_delegate)
+            Else
+                ' queue finished -> enable GUI controls
+                gcode.sendGCodeFileStop()
+            End If
+        End Sub
+
+        ''' <summary>
+        ''' This delegate gets called everytime an item in the queue changes its state
+        ''' and updates the GUI list view colors depending on the item state.
+        ''' </summary>
+        ''' <param name="item"></param>
+        ''' <param name="oldState"></param>
+        ''' <param name="newState"></param>
+        Public Delegate Sub QueueItemStatusChanged_Delegate(item As GrblQueueItem,
+                                           oldState As GrblQueueItem.ItemState,
+                                           newState As GrblQueueItem.ItemState)
+        Private Sub QueueItemStatusChanged(item As GrblQueueItem,
+                                           oldState As GrblQueueItem.ItemState,
+                                           newState As GrblQueueItem.ItemState) Handles _queue.QueueItemStateChanged
+
+            If _lview.InvokeRequired Then
+                ' we need to cross thread this callback
+                Dim _delegate As New QueueItemStatusChanged_Delegate(AddressOf QueueItemStatusChanged)
+                _lview.BeginInvoke(_delegate, New Object() {item, oldState, newState})
+            Else
+                If newState = GrblQueueItem.ItemState.waiting Then
+                    ' an item has been added to our queue and is waiting to be sent to grbl
+                    ' -> color it grey
+                    _lview.Items(item.Index).BackColor = Color.LightGray
+                    If Not _ignoreScreenUpdate Then _lview.Update()
+                End If
+
+                If newState = GrblQueueItem.ItemState.sent Then
+                    ' an item has been transferred to grbl's internal buffer
+                    ' -> color it yellow
+                    _lview.Items(item.Index).BackColor = Color.LightYellow
+                    _lview.Items(item.Index).SubItems(0).Text = "buff"
+
+                    Dim index As Integer = item.Index + 2
+                    If index >= _lview.Items.Count() Then index = _lview.Items.Count - 1
+                    _lview.EnsureVisible(index) ' scroll to latest command in grbl's buffer
+                    If Not _ignoreScreenUpdate Then _lview.Update()
+                End If
+
+                If newState = GrblQueueItem.ItemState.acknowledged Then
+                    ' an item has been acknowledged by grbl which means the corresponding
+                    ' command has been executed -> color it green
+                    Console.WriteLine("Ack " & item.Index & " " & item.Text)
+                    If item.ErrorFlag Then
+                        _lview.Items(item.Index).BackColor = Color.Red
+                        _lview.Items(item.Index).SubItems(0).Text = "Err"
+                    Else
+                        _lview.Items(item.Index).BackColor = Color.LightGreen
+                        _lview.Items(item.Index).SubItems(0).Text = "OK"
+                    End If
+
+                    ' if a next item does exist, color it orange to mark it as currently executing
+                    If item.Index + 1 < _lview.Items.Count AndAlso item.Index + 1 <> _pausedItem Then
+                        Dim index As Integer = item.Index + 1
+                        _lview.Items(index).BackColor = Color.Orange
+                        _lview.Items(index).SubItems(0).Text = "exec"
+                    End If
+                    If Not _ignoreScreenUpdate Then _lview.Update()
+                End If
+            End If
+        End Sub
+#End Region
 
         Public Sub Insert(ByVal data As String, ByVal lineNumber As Integer)
             ' Insert a new item into the view
@@ -242,12 +449,15 @@ Partial Class GrblGui
             lvi.SubItems.Add(lineNumber.ToString)    ' file line number
             lvi.SubItems.Add(data)              ' This is the Gcode block
             _lview.Items.Add(lvi)
+            _queue.enqueue(data, False, lineNumber)
 
             _lview.EnsureVisible(0)           ' show top of file for user to verify etc
             '_lview.Update()
         End Sub
 
         Public Sub UpdateGCodeStatus(ByVal stat As String, ByVal index As Integer)
+            Return
+
             ' Set the Status column of the line item
             If _filemode Then
                 _lview.Items(index).Text = stat
@@ -261,6 +471,8 @@ Partial Class GrblGui
         End Sub
 
         Public Sub UpdateGcodeSent(ByVal index As Integer)
+            Return
+
             '  Set background to indicate the gcode line was sent
             If _filemode Then       ' Are we running a file
                 _lview.Items(index).BackColor = Color.LightBlue
@@ -279,6 +491,7 @@ Partial Class GrblGui
                 Return GrblGui.lvGcode.Items.Count
             End Get
         End Property
+
         Property fileMode As Boolean
             ' Set true if we are running a gcode file
             Get
@@ -291,6 +504,8 @@ Partial Class GrblGui
     End Class
 
     Public Sub processLineEvent(ByVal data As String)
+        Return
+
 
         ' This event handles processing and sending GCode lines from the file as well as ok/error responses from Grbl
         ' Implements simple protocol (send block, wait for ok/error loop)
@@ -388,12 +603,12 @@ Partial Class GrblGui
         Select Case args.Tag
             Case "File"
                 Dim str As String = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
-                ofdGcodeFile.InitialDirectory = Path.Combine(Path.GetFullPath(str), "*")
+                'ofdGcodeFile.InitialDirectory = Path.Combine(Path.GetFullPath(str), "*") ' commented out because of FileNotFoundException
                 If tbSettingsDefaultExt.Text <> "" Then
                     ofdGcodeFile.Filter = String.Format("Gcode |*.{0}|All Files |*.*", tbSettingsDefaultExt.Text)
                     ofdGcodeFile.DefaultExt = String.Format(".{0}", tbSettingsDefaultExt.Text)
                 End If
-                ofdGcodeFile.FileName = "File"
+                'ofdGcodeFile.FileName = "File" ' commented out to allow re-opening the last file
                 If ofdGcodeFile.ShowDialog() = Windows.Forms.DialogResult.OK Then
                     'gcode.openGCodeFile(ofdGcodeFile.FileName)
                     gcode.loadGCodeFile(ofdGcodeFile.FileName)

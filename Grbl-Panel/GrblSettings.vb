@@ -1,5 +1,6 @@
 ﻿Imports System.Windows.Forms
 Imports System.Threading.Thread
+Imports System.Timers
 
 Partial Class GrblGui
     Public Class GrblSettings
@@ -39,18 +40,34 @@ Partial Class GrblGui
             End If
         End Sub
 
+        ''' <summary>
+        ''' Is called 1000 ms after opening the connection, sends "$$" to grbl
+        ''' to request the current configuration.
+        ''' </summary>
+        ''' <param name="sender"></param>
+        ''' <param name="e"></param>
+        Private Sub requestConfiguration(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+            _nextParam = 0
+            gcode.sendGCodeLine("$$")
+            _timer.Stop()
+        End Sub
+
+        Shared _timer As System.Timers.Timer
         Private Sub GrblConnected(ByVal msg As String)     ' Handles GrblGui.Connected Event
             If msg = "Connected" Then
 
                 ' We are connected to Grbl so populate the Settings
-                _nextParam = 0
-                gcode.sendGCodeLine("$$")
+                ' wait 1000 ms before fetching the configuration (on some systems the
+                ' request gets lost if sending "$$" directly after opening the connection)
+                _timer = New System.Timers.Timer(1000)
+                AddHandler _timer.Elapsed, New ElapsedEventHandler(AddressOf requestConfiguration)
+                _timer.Enabled = True
             End If
         End Sub
 
         Public Sub FillSettings(ByVal data As String)
             ' Add a settings line to the display
-            Console.WriteLine(" $ Data is : " + data)
+            Console.WriteLine(" $ Data is : " + data.Trim())
             ' Return
             Dim params() As String
             If _nextParam = 0 Then

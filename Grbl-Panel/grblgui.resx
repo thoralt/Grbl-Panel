@@ -120,9 +120,6 @@
   <metadata name="MenuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <metadata name="ToolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>526, 15</value>
-  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="btnFileReload.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -171,6 +168,24 @@
         VY9x1qIGtwAAAABJRU5ErkJggg==
 </value>
   </data>
+  <metadata name="ToolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>526, 15</value>
+  </metadata>
+  <data name="tbProbeToolDiameter.ToolTip" xml:space="preserve">
+    <value>This is the probe tool diameter, half of it will be automatically
+subtracted from/added to the position (depending on the
+probing direction) after a successful probing cycle. For the Z axis,
+this value is always ignored.
+
+Pay attention to your metric/imperial setting!</value>
+  </data>
+  <data name="tbProbePlateThickness.ToolTip" xml:space="preserve">
+    <value>This is the probe plate thickness, it will be automatically
+subtracted from/added to the position (depending on the
+probing direction) after a successful probing cycle.
+
+Pay attention to your metric/imperial setting!</value>
+  </data>
   <metadata name="ofdGcodeFile.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>241, 15</value>
   </metadata>
@@ -183,20 +198,6 @@
   <metadata name="GrblSettingsBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>839, 15</value>
   </metadata>
-  <data name="tbProbePlateThickness.ToolTip" xml:space="preserve">
-    <value>This is the probe plate thickness, it will be automatically
-subtracted from/added to the position (depending on the
-probing direction) after a successful probing cycle.
-
-Pay attention to your metric/imperial setting!</value>
-  </data>
-  <data name="tbProbeToolDiameter.ToolTip" xml:space="preserve">
-    <value>This is the probe tool diameter, half of it will be automatically
-subtracted from/added to the position (depending on the
-probing direction) after a successful probing cycle.
-
-Pay attention to your metric/imperial setting!</value>
-  </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>60</value>
   </metadata>

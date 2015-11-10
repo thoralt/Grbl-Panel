@@ -73,7 +73,13 @@ Public Class GrblIF
                 If _port.IsOpen Then
                     Return False
                 End If
+                If _commport Is Nothing Then ' added to avoid exception
+                    Return False
+                End If
                 _port.PortName = _commport
+                If _baudrate = 0 Then ' added to avoid exception
+                    Return False
+                End If
                 _port.BaudRate = _baudrate
 
                 Try

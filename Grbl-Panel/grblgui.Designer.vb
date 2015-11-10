@@ -92,8 +92,11 @@ Partial Class GrblGui
         Me.Label24 = New System.Windows.Forms.Label()
         Me.prgbRxBuf = New System.Windows.Forms.ProgressBar()
         Me.prgBarQ = New System.Windows.Forms.ProgressBar()
+        Me.cbVerbose = New System.Windows.Forms.CheckBox()
         Me.lbResponses = New System.Windows.Forms.ListBox()
         Me.gbGcode = New System.Windows.Forms.GroupBox()
+        Me.GrblBufferLevel = New System.Windows.Forms.ProgressBar()
+        Me.TransmissionProgress = New System.Windows.Forms.ProgressBar()
         Me.btnFileReload = New System.Windows.Forms.Button()
         Me.tbGCodeMessage = New System.Windows.Forms.TextBox()
         Me.Label27 = New System.Windows.Forms.Label()
@@ -121,6 +124,11 @@ Partial Class GrblGui
         Me.gbPosition = New System.Windows.Forms.GroupBox()
         Me.tabCtlPosition = New System.Windows.Forms.TabControl()
         Me.tpWork = New System.Windows.Forms.TabPage()
+        Me.btnProbeXn = New System.Windows.Forms.Button()
+        Me.btnProbeXp = New System.Windows.Forms.Button()
+        Me.btnProbeYn = New System.Windows.Forms.Button()
+        Me.btnProbeYp = New System.Windows.Forms.Button()
+        Me.btnProbeZn = New System.Windows.Forms.Button()
         Me.Panel5 = New System.Windows.Forms.Panel()
         Me.tbWorkZ = New System.Windows.Forms.TextBox()
         Me.tbMachZ = New System.Windows.Forms.TextBox()
@@ -189,8 +197,20 @@ Partial Class GrblGui
         Me.tbOffsetsG58X = New System.Windows.Forms.TextBox()
         Me.Label21 = New System.Windows.Forms.Label()
         Me.tabPgSettings = New System.Windows.Forms.TabPage()
+        Me.GroupBox2 = New System.Windows.Forms.GroupBox()
+        Me.Label44 = New System.Windows.Forms.Label()
+        Me.tbProbeToolDiameter = New System.Windows.Forms.TextBox()
+        Me.Label22 = New System.Windows.Forms.Label()
+        Me.tbProbePlateThickness = New System.Windows.Forms.TextBox()
+        Me.Label46 = New System.Windows.Forms.Label()
+        Me.Label48 = New System.Windows.Forms.Label()
+        Me.tbProbePullOff = New System.Windows.Forms.TextBox()
+        Me.tbProbeFeed = New System.Windows.Forms.TextBox()
+        Me.Label49 = New System.Windows.Forms.Label()
+        Me.tbProbeDistance = New System.Windows.Forms.TextBox()
         Me.gbGrblSettings = New System.Windows.Forms.GroupBox()
         Me.Label4 = New System.Windows.Forms.Label()
+        Me.tbSettingsGrblLastParam = New System.Windows.Forms.TextBox()
         Me.dgGrblSettings = New System.Windows.Forms.DataGridView()
         Me.btnSettingsGrbl = New System.Windows.Forms.Button()
         Me.gbSettingsOffsets = New System.Windows.Forms.GroupBox()
@@ -209,79 +229,61 @@ Partial Class GrblGui
         Me.Label69 = New System.Windows.Forms.Label()
         Me.Label42 = New System.Windows.Forms.Label()
         Me.gbSettingsMisc = New System.Windows.Forms.GroupBox()
+        Me.tbSettingsDefaultExt = New System.Windows.Forms.TextBox()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.Label6 = New System.Windows.Forms.Label()
-        Me.btnSettingsRefreshMisc = New System.Windows.Forms.Button()
-        Me.Label37 = New System.Windows.Forms.Label()
-        Me.Label36 = New System.Windows.Forms.Label()
-        Me.Label26 = New System.Windows.Forms.Label()
-        Me.gbSettingsPosition = New System.Windows.Forms.GroupBox()
-        Me.Label8 = New System.Windows.Forms.Label()
-        Me.btnSettingsRefreshPosition = New System.Windows.Forms.Button()
-        Me.Label29 = New System.Windows.Forms.Label()
-        Me.Label28 = New System.Windows.Forms.Label()
-        Me.Label13 = New System.Windows.Forms.Label()
-        Me.Label12 = New System.Windows.Forms.Label()
-        Me.Label11 = New System.Windows.Forms.Label()
-        Me.gbSettingsJogging = New System.Windows.Forms.GroupBox()
-        Me.btnSettingsRefreshJogging = New System.Windows.Forms.Button()
-        Me.Label41 = New System.Windows.Forms.Label()
-        Me.Label40 = New System.Windows.Forms.Label()
-        Me.Label39 = New System.Windows.Forms.Label()
-        Me.Label38 = New System.Windows.Forms.Label()
-        Me.Label35 = New System.Windows.Forms.Label()
-        Me.Label34 = New System.Windows.Forms.Label()
-        Me.Label32 = New System.Windows.Forms.Label()
-        Me.Label33 = New System.Windows.Forms.Label()
-        Me.Label31 = New System.Windows.Forms.Label()
-        Me.Label30 = New System.Windows.Forms.Label()
-        Me.ofdGcodeFile = New System.Windows.Forms.OpenFileDialog()
-        Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
-        Me.sfdOffsets = New System.Windows.Forms.SaveFileDialog()
-        Me.ofdOffsets = New System.Windows.Forms.OpenFileDialog()
-        Me.GrblSettingsBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.btnProbeZn = New System.Windows.Forms.Button()
-        Me.GroupBox2 = New System.Windows.Forms.GroupBox()
-        Me.Label22 = New System.Windows.Forms.Label()
-        Me.Label46 = New System.Windows.Forms.Label()
-        Me.Label48 = New System.Windows.Forms.Label()
-        Me.Label49 = New System.Windows.Forms.Label()
-        Me.btnProbeYp = New System.Windows.Forms.Button()
-        Me.btnProbeYn = New System.Windows.Forms.Button()
-        Me.btnProbeXp = New System.Windows.Forms.Button()
-        Me.btnProbeXn = New System.Windows.Forms.Button()
-        Me.cbVerbose = New System.Windows.Forms.CheckBox()
-        Me.tbProbePlateThickness = New System.Windows.Forms.TextBox()
-        Me.tbProbePullOff = New System.Windows.Forms.TextBox()
-        Me.tbProbeFeed = New System.Windows.Forms.TextBox()
-        Me.tbProbeDistance = New System.Windows.Forms.TextBox()
-        Me.tbSettingsGrblLastParam = New System.Windows.Forms.TextBox()
-        Me.tbSettingsDefaultExt = New System.Windows.Forms.TextBox()
         Me.tbSettingsStartupDelay = New System.Windows.Forms.TextBox()
         Me.cbSettingsLeftHanded = New System.Windows.Forms.CheckBox()
         Me.cbSettingsConnectOnLoad = New System.Windows.Forms.CheckBox()
         Me.cbSettingsPauseOnError = New System.Windows.Forms.CheckBox()
         Me.cbStatusPollEnable = New System.Windows.Forms.CheckBox()
+        Me.btnSettingsRefreshMisc = New System.Windows.Forms.Button()
+        Me.Label37 = New System.Windows.Forms.Label()
+        Me.Label36 = New System.Windows.Forms.Label()
         Me.tbSettingsRBuffSize = New System.Windows.Forms.TextBox()
         Me.tbSettingsQSize = New System.Windows.Forms.TextBox()
+        Me.Label26 = New System.Windows.Forms.Label()
         Me.tbSettingsPollRate = New System.Windows.Forms.TextBox()
+        Me.gbSettingsPosition = New System.Windows.Forms.GroupBox()
+        Me.Label8 = New System.Windows.Forms.Label()
         Me.tbSettingsSpclPosition2 = New System.Windows.Forms.TextBox()
+        Me.btnSettingsRefreshPosition = New System.Windows.Forms.Button()
+        Me.Label29 = New System.Windows.Forms.Label()
         Me.tbWorkZ0Cmd = New System.Windows.Forms.TextBox()
+        Me.Label28 = New System.Windows.Forms.Label()
         Me.tbWorkY0Cmd = New System.Windows.Forms.TextBox()
+        Me.Label13 = New System.Windows.Forms.Label()
+        Me.Label12 = New System.Windows.Forms.Label()
         Me.tbWorkX0Cmd = New System.Windows.Forms.TextBox()
         Me.tbSettingsZeroXYZCmd = New System.Windows.Forms.TextBox()
+        Me.Label11 = New System.Windows.Forms.Label()
         Me.tbSettingsSpclPosition1 = New System.Windows.Forms.TextBox()
+        Me.gbSettingsJogging = New System.Windows.Forms.GroupBox()
         Me.cbSettingsKeyboardJogging = New System.Windows.Forms.CheckBox()
+        Me.btnSettingsRefreshJogging = New System.Windows.Forms.Button()
+        Me.Label41 = New System.Windows.Forms.Label()
+        Me.Label40 = New System.Windows.Forms.Label()
+        Me.Label39 = New System.Windows.Forms.Label()
+        Me.Label38 = New System.Windows.Forms.Label()
         Me.tbSettingsZRepeat = New System.Windows.Forms.TextBox()
         Me.tbSettingsYRepeat = New System.Windows.Forms.TextBox()
         Me.tbSettingsXRepeat = New System.Windows.Forms.TextBox()
+        Me.Label35 = New System.Windows.Forms.Label()
+        Me.Label34 = New System.Windows.Forms.Label()
+        Me.Label32 = New System.Windows.Forms.Label()
         Me.tbSettingsFRMetric = New System.Windows.Forms.TextBox()
+        Me.Label33 = New System.Windows.Forms.Label()
         Me.tbSettingsFIMetric = New System.Windows.Forms.TextBox()
+        Me.Label31 = New System.Windows.Forms.Label()
         Me.tbSettingsFRImperial = New System.Windows.Forms.TextBox()
+        Me.Label30 = New System.Windows.Forms.Label()
         Me.cbSettingsMetric = New System.Windows.Forms.CheckBox()
         Me.tbSettingsFIImperial = New System.Windows.Forms.TextBox()
-        Me.Label44 = New System.Windows.Forms.Label()
-        Me.tbProbeToolDiameter = New System.Windows.Forms.TextBox()
+        Me.ofdGcodeFile = New System.Windows.Forms.OpenFileDialog()
+        Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
+        Me.sfdOffsets = New System.Windows.Forms.SaveFileDialog()
+        Me.ofdOffsets = New System.Windows.Forms.OpenFileDialog()
+        Me.GrblSettingsBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.MenuStrip1.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.tabPgInterface.SuspendLayout()
@@ -308,6 +310,7 @@ Partial Class GrblGui
         Me.GroupBox1.SuspendLayout()
         Me.tpOffsets.SuspendLayout()
         Me.tabPgSettings.SuspendLayout()
+        Me.GroupBox2.SuspendLayout()
         Me.gbGrblSettings.SuspendLayout()
         CType(Me.dgGrblSettings, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.gbSettingsOffsets.SuspendLayout()
@@ -315,7 +318,6 @@ Partial Class GrblGui
         Me.gbSettingsPosition.SuspendLayout()
         Me.gbSettingsJogging.SuspendLayout()
         CType(Me.GrblSettingsBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupBox2.SuspendLayout()
         Me.SuspendLayout()
         '
         'MenuStrip1
@@ -1049,6 +1051,18 @@ Partial Class GrblGui
         Me.prgBarQ.Style = System.Windows.Forms.ProgressBarStyle.Continuous
         Me.prgBarQ.TabIndex = 20
         '
+        'cbVerbose
+        '
+        Me.cbVerbose.AutoSize = True
+        Me.cbVerbose.Checked = Global.GrblPanel.My.MySettings.Default.StatusVerbose
+        Me.cbVerbose.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.GrblPanel.My.MySettings.Default, "statusVerbose", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.cbVerbose.Location = New System.Drawing.Point(87, 20)
+        Me.cbVerbose.Name = "cbVerbose"
+        Me.cbVerbose.Size = New System.Drawing.Size(83, 17)
+        Me.cbVerbose.TabIndex = 15
+        Me.cbVerbose.Text = "Verbose      "
+        Me.cbVerbose.UseVisualStyleBackColor = True
+        '
         'lbResponses
         '
         Me.lbResponses.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
@@ -1065,6 +1079,8 @@ Partial Class GrblGui
         Me.gbGcode.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.gbGcode.Controls.Add(Me.GrblBufferLevel)
+        Me.gbGcode.Controls.Add(Me.TransmissionProgress)
         Me.gbGcode.Controls.Add(Me.btnFileReload)
         Me.gbGcode.Controls.Add(Me.tbGCodeMessage)
         Me.gbGcode.Controls.Add(Me.Label27)
@@ -1083,6 +1099,22 @@ Partial Class GrblGui
         Me.gbGcode.TabIndex = 14
         Me.gbGcode.TabStop = False
         Me.gbGcode.Text = "GCode"
+        '
+        'GrblBufferLevel
+        '
+        Me.GrblBufferLevel.Location = New System.Drawing.Point(393, 52)
+        Me.GrblBufferLevel.Name = "GrblBufferLevel"
+        Me.GrblBufferLevel.Size = New System.Drawing.Size(115, 10)
+        Me.GrblBufferLevel.Style = System.Windows.Forms.ProgressBarStyle.Continuous
+        Me.GrblBufferLevel.TabIndex = 23
+        '
+        'TransmissionProgress
+        '
+        Me.TransmissionProgress.Location = New System.Drawing.Point(6, 87)
+        Me.TransmissionProgress.Name = "TransmissionProgress"
+        Me.TransmissionProgress.Size = New System.Drawing.Size(503, 10)
+        Me.TransmissionProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous
+        Me.TransmissionProgress.TabIndex = 22
         '
         'btnFileReload
         '
@@ -1152,7 +1184,7 @@ Partial Class GrblGui
         Me.tbGcodeFile.Enabled = False
         Me.tbGcodeFile.Location = New System.Drawing.Point(6, 19)
         Me.tbGcodeFile.Name = "tbGcodeFile"
-        Me.tbGcodeFile.Size = New System.Drawing.Size(424, 20)
+        Me.tbGcodeFile.Size = New System.Drawing.Size(503, 20)
         Me.tbGcodeFile.TabIndex = 10
         '
         'btnFileSelect
@@ -1185,9 +1217,9 @@ Partial Class GrblGui
         Me.lvGcode.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.lvColStatus, Me.lvColLineNo, Me.lvColGCode})
         Me.lvGcode.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lvGcode.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
-        Me.lvGcode.Location = New System.Drawing.Point(6, 84)
+        Me.lvGcode.Location = New System.Drawing.Point(6, 103)
         Me.lvGcode.Name = "lvGcode"
-        Me.lvGcode.Size = New System.Drawing.Size(503, 283)
+        Me.lvGcode.Size = New System.Drawing.Size(503, 264)
         Me.lvGcode.TabIndex = 18
         Me.lvGcode.UseCompatibleStateImageBehavior = False
         Me.lvGcode.View = System.Windows.Forms.View.Details
@@ -1373,6 +1405,71 @@ Partial Class GrblGui
         Me.tpWork.TabIndex = 0
         Me.tpWork.Text = "Work"
         Me.tpWork.UseVisualStyleBackColor = True
+        '
+        'btnProbeXn
+        '
+        Me.btnProbeXn.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.btnProbeXn.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold)
+        Me.btnProbeXn.Location = New System.Drawing.Point(340, 66)
+        Me.btnProbeXn.Name = "btnProbeXn"
+        Me.btnProbeXn.Size = New System.Drawing.Size(34, 20)
+        Me.btnProbeXn.TabIndex = 24
+        Me.btnProbeXn.Tag = "PX-"
+        Me.btnProbeXn.Text = "P-"
+        Me.ToolTip1.SetToolTip(Me.btnProbeXn, "Start probing cycle in negative X direction")
+        Me.btnProbeXn.UseVisualStyleBackColor = True
+        '
+        'btnProbeXp
+        '
+        Me.btnProbeXp.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.btnProbeXp.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold)
+        Me.btnProbeXp.Location = New System.Drawing.Point(340, 8)
+        Me.btnProbeXp.Name = "btnProbeXp"
+        Me.btnProbeXp.Size = New System.Drawing.Size(34, 20)
+        Me.btnProbeXp.TabIndex = 23
+        Me.btnProbeXp.Tag = "PX+"
+        Me.btnProbeXp.Text = "P+"
+        Me.ToolTip1.SetToolTip(Me.btnProbeXp, "Start probing cycle in positive X direction")
+        Me.btnProbeXp.UseVisualStyleBackColor = True
+        '
+        'btnProbeYn
+        '
+        Me.btnProbeYn.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.btnProbeYn.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold)
+        Me.btnProbeYn.Location = New System.Drawing.Point(340, 154)
+        Me.btnProbeYn.Name = "btnProbeYn"
+        Me.btnProbeYn.Size = New System.Drawing.Size(34, 20)
+        Me.btnProbeYn.TabIndex = 22
+        Me.btnProbeYn.Tag = "PY-"
+        Me.btnProbeYn.Text = "P-"
+        Me.ToolTip1.SetToolTip(Me.btnProbeYn, "Start probing cycle in negative Y direction")
+        Me.btnProbeYn.UseVisualStyleBackColor = True
+        '
+        'btnProbeYp
+        '
+        Me.btnProbeYp.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.btnProbeYp.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold)
+        Me.btnProbeYp.Location = New System.Drawing.Point(340, 96)
+        Me.btnProbeYp.Name = "btnProbeYp"
+        Me.btnProbeYp.Size = New System.Drawing.Size(34, 20)
+        Me.btnProbeYp.TabIndex = 21
+        Me.btnProbeYp.Tag = "PY+"
+        Me.btnProbeYp.Text = "P+"
+        Me.ToolTip1.SetToolTip(Me.btnProbeYp, "Start probing cycle in positive Y direction")
+        Me.btnProbeYp.UseVisualStyleBackColor = True
+        '
+        'btnProbeZn
+        '
+        Me.btnProbeZn.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.btnProbeZn.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold)
+        Me.btnProbeZn.Location = New System.Drawing.Point(340, 242)
+        Me.btnProbeZn.Name = "btnProbeZn"
+        Me.btnProbeZn.Size = New System.Drawing.Size(34, 20)
+        Me.btnProbeZn.TabIndex = 20
+        Me.btnProbeZn.Tag = "PZ-"
+        Me.btnProbeZn.Text = "P-"
+        Me.ToolTip1.SetToolTip(Me.btnProbeZn, "Start probing cycle in negative Z direction")
+        Me.btnProbeZn.UseVisualStyleBackColor = True
         '
         'Panel5
         '
@@ -2119,6 +2216,125 @@ Partial Class GrblGui
         Me.tabPgSettings.Text = "Settings"
         Me.tabPgSettings.UseVisualStyleBackColor = True
         '
+        'GroupBox2
+        '
+        Me.GroupBox2.Controls.Add(Me.Label44)
+        Me.GroupBox2.Controls.Add(Me.tbProbeToolDiameter)
+        Me.GroupBox2.Controls.Add(Me.Label22)
+        Me.GroupBox2.Controls.Add(Me.tbProbePlateThickness)
+        Me.GroupBox2.Controls.Add(Me.Label46)
+        Me.GroupBox2.Controls.Add(Me.Label48)
+        Me.GroupBox2.Controls.Add(Me.tbProbePullOff)
+        Me.GroupBox2.Controls.Add(Me.tbProbeFeed)
+        Me.GroupBox2.Controls.Add(Me.Label49)
+        Me.GroupBox2.Controls.Add(Me.tbProbeDistance)
+        Me.GroupBox2.Location = New System.Drawing.Point(607, 349)
+        Me.GroupBox2.Name = "GroupBox2"
+        Me.GroupBox2.Size = New System.Drawing.Size(220, 157)
+        Me.GroupBox2.TabIndex = 112
+        Me.GroupBox2.TabStop = False
+        Me.GroupBox2.Text = "Probing"
+        '
+        'Label44
+        '
+        Me.Label44.AutoSize = True
+        Me.Label44.Location = New System.Drawing.Point(70, 122)
+        Me.Label44.Name = "Label44"
+        Me.Label44.Size = New System.Drawing.Size(98, 13)
+        Me.Label44.TabIndex = 22
+        Me.Label44.Text = "Probe tool diameter"
+        '
+        'tbProbeToolDiameter
+        '
+        Me.tbProbeToolDiameter.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.GrblPanel.My.MySettings.Default, "ProbeToolDiameter", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.tbProbeToolDiameter.Location = New System.Drawing.Point(6, 120)
+        Me.tbProbeToolDiameter.Name = "tbProbeToolDiameter"
+        Me.tbProbeToolDiameter.Size = New System.Drawing.Size(45, 20)
+        Me.tbProbeToolDiameter.TabIndex = 21
+        Me.tbProbeToolDiameter.Text = Global.GrblPanel.My.MySettings.Default.ProbeToolDiameter
+        Me.ToolTip1.SetToolTip(Me.tbProbeToolDiameter, resources.GetString("tbProbeToolDiameter.ToolTip"))
+        '
+        'Label22
+        '
+        Me.Label22.AutoSize = True
+        Me.Label22.Location = New System.Drawing.Point(70, 96)
+        Me.Label22.Name = "Label22"
+        Me.Label22.Size = New System.Drawing.Size(109, 13)
+        Me.Label22.TabIndex = 20
+        Me.Label22.Text = "Probe plate thickness"
+        '
+        'tbProbePlateThickness
+        '
+        Me.tbProbePlateThickness.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.GrblPanel.My.MySettings.Default, "ProbePlateThickness", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.tbProbePlateThickness.Location = New System.Drawing.Point(6, 94)
+        Me.tbProbePlateThickness.Name = "tbProbePlateThickness"
+        Me.tbProbePlateThickness.Size = New System.Drawing.Size(45, 20)
+        Me.tbProbePlateThickness.TabIndex = 19
+        Me.tbProbePlateThickness.Text = Global.GrblPanel.My.MySettings.Default.ProbePlateThickness
+        Me.ToolTip1.SetToolTip(Me.tbProbePlateThickness, resources.GetString("tbProbePlateThickness.ToolTip"))
+        '
+        'Label46
+        '
+        Me.Label46.AutoSize = True
+        Me.Label46.Location = New System.Drawing.Point(70, 70)
+        Me.Label46.Name = "Label46"
+        Me.Label46.Size = New System.Drawing.Size(82, 13)
+        Me.Label46.TabIndex = 5
+        Me.Label46.Text = "Pull off distance"
+        '
+        'Label48
+        '
+        Me.Label48.AutoSize = True
+        Me.Label48.Location = New System.Drawing.Point(70, 44)
+        Me.Label48.Name = "Label48"
+        Me.Label48.Size = New System.Drawing.Size(31, 13)
+        Me.Label48.TabIndex = 4
+        Me.Label48.Text = "Feed"
+        '
+        'tbProbePullOff
+        '
+        Me.tbProbePullOff.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.GrblPanel.My.MySettings.Default, "ProbePullOff", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.tbProbePullOff.Location = New System.Drawing.Point(6, 68)
+        Me.tbProbePullOff.Name = "tbProbePullOff"
+        Me.tbProbePullOff.Size = New System.Drawing.Size(45, 20)
+        Me.tbProbePullOff.TabIndex = 3
+        Me.tbProbePullOff.Text = Global.GrblPanel.My.MySettings.Default.ProbePullOff
+        Me.ToolTip1.SetToolTip(Me.tbProbePullOff, "After a successful probing cycle the tool" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "will be moved away from the probe plat" &
+        "e" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "by the given distance." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Pay attention to your metric/imperial setting!")
+        '
+        'tbProbeFeed
+        '
+        Me.tbProbeFeed.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.GrblPanel.My.MySettings.Default, "ProbeFeed", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.tbProbeFeed.Location = New System.Drawing.Point(6, 42)
+        Me.tbProbeFeed.Name = "tbProbeFeed"
+        Me.tbProbeFeed.Size = New System.Drawing.Size(45, 20)
+        Me.tbProbeFeed.TabIndex = 2
+        Me.tbProbeFeed.Text = Global.GrblPanel.My.MySettings.Default.ProbeFeed
+        Me.ToolTip1.SetToolTip(Me.tbProbeFeed, "This is the feed rate used during probing. Choose it " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "as low as possible to mini" &
+        "mize tool impact and " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "to increase probing accuracy." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Pay attention to your me" &
+        "tric/imperial setting!")
+        '
+        'Label49
+        '
+        Me.Label49.AutoSize = True
+        Me.Label49.Location = New System.Drawing.Point(70, 22)
+        Me.Label49.Name = "Label49"
+        Me.Label49.Size = New System.Drawing.Size(94, 13)
+        Me.Label49.TabIndex = 1
+        Me.Label49.Text = "Maximum distance"
+        '
+        'tbProbeDistance
+        '
+        Me.tbProbeDistance.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.GrblPanel.My.MySettings.Default, "ProbeDistance", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.tbProbeDistance.Location = New System.Drawing.Point(6, 19)
+        Me.tbProbeDistance.Name = "tbProbeDistance"
+        Me.tbProbeDistance.Size = New System.Drawing.Size(45, 20)
+        Me.tbProbeDistance.TabIndex = 0
+        Me.tbProbeDistance.Text = Global.GrblPanel.My.MySettings.Default.ProbeDistance
+        Me.ToolTip1.SetToolTip(Me.tbProbeDistance, "This is the maximum distance the tool is moved during " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "the probe cycle. If no co" &
+        "ntact is made within this distance," & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "probing will fail." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Pay attention to your" &
+        " metric/imperial setting!")
+        '
         'gbGrblSettings
         '
         Me.gbGrblSettings.Controls.Add(Me.Label4)
@@ -2140,6 +2356,16 @@ Partial Class GrblGui
         Me.Label4.Size = New System.Drawing.Size(82, 13)
         Me.Label4.TabIndex = 7
         Me.Label4.Text = "Last Grbl Param"
+        '
+        'tbSettingsGrblLastParam
+        '
+        Me.tbSettingsGrblLastParam.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.GrblPanel.My.MySettings.Default, "GrblLastParamID", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.tbSettingsGrblLastParam.Location = New System.Drawing.Point(6, 552)
+        Me.tbSettingsGrblLastParam.Name = "tbSettingsGrblLastParam"
+        Me.tbSettingsGrblLastParam.Size = New System.Drawing.Size(45, 20)
+        Me.tbSettingsGrblLastParam.TabIndex = 6
+        Me.tbSettingsGrblLastParam.Text = Global.GrblPanel.My.MySettings.Default.GrblLastParamID
+        Me.ToolTip1.SetToolTip(Me.tbSettingsGrblLastParam, "Change this to reflect the highest Grbl Parameter number")
         '
         'dgGrblSettings
         '
@@ -2349,6 +2575,15 @@ Partial Class GrblGui
         Me.gbSettingsMisc.TabStop = False
         Me.gbSettingsMisc.Text = "Misc"
         '
+        'tbSettingsDefaultExt
+        '
+        Me.tbSettingsDefaultExt.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.GrblPanel.My.MySettings.Default, "DefaultFileExt", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.tbSettingsDefaultExt.Location = New System.Drawing.Point(6, 120)
+        Me.tbSettingsDefaultExt.Name = "tbSettingsDefaultExt"
+        Me.tbSettingsDefaultExt.Size = New System.Drawing.Size(45, 20)
+        Me.tbSettingsDefaultExt.TabIndex = 22
+        Me.tbSettingsDefaultExt.Text = Global.GrblPanel.My.MySettings.Default.DefaultFileExt
+        '
         'Label5
         '
         Me.Label5.AutoSize = True
@@ -2366,475 +2601,6 @@ Partial Class GrblGui
         Me.Label6.Size = New System.Drawing.Size(77, 13)
         Me.Label6.TabIndex = 21
         Me.Label6.Text = "Default File ext"
-        '
-        'btnSettingsRefreshMisc
-        '
-        Me.btnSettingsRefreshMisc.Location = New System.Drawing.Point(6, 243)
-        Me.btnSettingsRefreshMisc.Name = "btnSettingsRefreshMisc"
-        Me.btnSettingsRefreshMisc.Size = New System.Drawing.Size(75, 23)
-        Me.btnSettingsRefreshMisc.TabIndex = 6
-        Me.btnSettingsRefreshMisc.Tag = "Misc"
-        Me.btnSettingsRefreshMisc.Text = "Refresh"
-        Me.btnSettingsRefreshMisc.UseVisualStyleBackColor = True
-        '
-        'Label37
-        '
-        Me.Label37.AutoSize = True
-        Me.Label37.Location = New System.Drawing.Point(70, 70)
-        Me.Label37.Name = "Label37"
-        Me.Label37.Size = New System.Drawing.Size(77, 13)
-        Me.Label37.TabIndex = 5
-        Me.Label37.Text = "RBuf Max Size"
-        '
-        'Label36
-        '
-        Me.Label36.AutoSize = True
-        Me.Label36.Location = New System.Drawing.Point(70, 44)
-        Me.Label36.Name = "Label36"
-        Me.Label36.Size = New System.Drawing.Size(61, 13)
-        Me.Label36.TabIndex = 4
-        Me.Label36.Text = "Q Max Size"
-        '
-        'Label26
-        '
-        Me.Label26.AutoSize = True
-        Me.Label26.Location = New System.Drawing.Point(70, 22)
-        Me.Label26.Name = "Label26"
-        Me.Label26.Size = New System.Drawing.Size(84, 13)
-        Me.Label26.TabIndex = 1
-        Me.Label26.Text = "Poll Interval (ms)"
-        '
-        'gbSettingsPosition
-        '
-        Me.gbSettingsPosition.Controls.Add(Me.Label8)
-        Me.gbSettingsPosition.Controls.Add(Me.tbSettingsSpclPosition2)
-        Me.gbSettingsPosition.Controls.Add(Me.btnSettingsRefreshPosition)
-        Me.gbSettingsPosition.Controls.Add(Me.Label29)
-        Me.gbSettingsPosition.Controls.Add(Me.tbWorkZ0Cmd)
-        Me.gbSettingsPosition.Controls.Add(Me.Label28)
-        Me.gbSettingsPosition.Controls.Add(Me.tbWorkY0Cmd)
-        Me.gbSettingsPosition.Controls.Add(Me.Label13)
-        Me.gbSettingsPosition.Controls.Add(Me.Label12)
-        Me.gbSettingsPosition.Controls.Add(Me.tbWorkX0Cmd)
-        Me.gbSettingsPosition.Controls.Add(Me.tbSettingsZeroXYZCmd)
-        Me.gbSettingsPosition.Controls.Add(Me.Label11)
-        Me.gbSettingsPosition.Controls.Add(Me.tbSettingsSpclPosition1)
-        Me.gbSettingsPosition.Location = New System.Drawing.Point(362, 19)
-        Me.gbSettingsPosition.Name = "gbSettingsPosition"
-        Me.gbSettingsPosition.Size = New System.Drawing.Size(239, 209)
-        Me.gbSettingsPosition.TabIndex = 1
-        Me.gbSettingsPosition.TabStop = False
-        Me.gbSettingsPosition.Text = "Position"
-        '
-        'Label8
-        '
-        Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(135, 47)
-        Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(94, 13)
-        Me.Label8.TabIndex = 12
-        Me.Label8.Text = "GoTo Spcl Posn 2"
-        '
-        'btnSettingsRefreshPosition
-        '
-        Me.btnSettingsRefreshPosition.Location = New System.Drawing.Point(6, 180)
-        Me.btnSettingsRefreshPosition.Name = "btnSettingsRefreshPosition"
-        Me.btnSettingsRefreshPosition.Size = New System.Drawing.Size(75, 23)
-        Me.btnSettingsRefreshPosition.TabIndex = 10
-        Me.btnSettingsRefreshPosition.Tag = "Position"
-        Me.btnSettingsRefreshPosition.Text = "Refresh"
-        Me.btnSettingsRefreshPosition.UseVisualStyleBackColor = True
-        '
-        'Label29
-        '
-        Me.Label29.AutoSize = True
-        Me.Label29.Location = New System.Drawing.Point(135, 150)
-        Me.Label29.Name = "Label29"
-        Me.Label29.Size = New System.Drawing.Size(75, 13)
-        Me.Label29.TabIndex = 9
-        Me.Label29.Text = "Work Z 0 cmd"
-        '
-        'Label28
-        '
-        Me.Label28.AutoSize = True
-        Me.Label28.Location = New System.Drawing.Point(135, 124)
-        Me.Label28.Name = "Label28"
-        Me.Label28.Size = New System.Drawing.Size(75, 13)
-        Me.Label28.TabIndex = 7
-        Me.Label28.Text = "Work Y 0 cmd"
-        '
-        'Label13
-        '
-        Me.Label13.AutoSize = True
-        Me.Label13.Location = New System.Drawing.Point(135, 99)
-        Me.Label13.Name = "Label13"
-        Me.Label13.Size = New System.Drawing.Size(75, 13)
-        Me.Label13.TabIndex = 5
-        Me.Label13.Text = "Work X 0 cmd"
-        '
-        'Label12
-        '
-        Me.Label12.AutoSize = True
-        Me.Label12.Location = New System.Drawing.Point(135, 73)
-        Me.Label12.Name = "Label12"
-        Me.Label12.Size = New System.Drawing.Size(67, 13)
-        Me.Label12.TabIndex = 4
-        Me.Label12.Text = "Zero All Cmd"
-        '
-        'Label11
-        '
-        Me.Label11.AutoSize = True
-        Me.Label11.Location = New System.Drawing.Point(135, 21)
-        Me.Label11.Name = "Label11"
-        Me.Label11.Size = New System.Drawing.Size(94, 13)
-        Me.Label11.TabIndex = 1
-        Me.Label11.Text = "Go To Spcl Posn1"
-        Me.ToolTip1.SetToolTip(Me.Label11, "Also known as Soft Home")
-        '
-        'gbSettingsJogging
-        '
-        Me.gbSettingsJogging.Controls.Add(Me.cbSettingsKeyboardJogging)
-        Me.gbSettingsJogging.Controls.Add(Me.btnSettingsRefreshJogging)
-        Me.gbSettingsJogging.Controls.Add(Me.Label41)
-        Me.gbSettingsJogging.Controls.Add(Me.Label40)
-        Me.gbSettingsJogging.Controls.Add(Me.Label39)
-        Me.gbSettingsJogging.Controls.Add(Me.Label38)
-        Me.gbSettingsJogging.Controls.Add(Me.tbSettingsZRepeat)
-        Me.gbSettingsJogging.Controls.Add(Me.tbSettingsYRepeat)
-        Me.gbSettingsJogging.Controls.Add(Me.tbSettingsXRepeat)
-        Me.gbSettingsJogging.Controls.Add(Me.Label35)
-        Me.gbSettingsJogging.Controls.Add(Me.Label34)
-        Me.gbSettingsJogging.Controls.Add(Me.Label32)
-        Me.gbSettingsJogging.Controls.Add(Me.tbSettingsFRMetric)
-        Me.gbSettingsJogging.Controls.Add(Me.Label33)
-        Me.gbSettingsJogging.Controls.Add(Me.tbSettingsFIMetric)
-        Me.gbSettingsJogging.Controls.Add(Me.Label31)
-        Me.gbSettingsJogging.Controls.Add(Me.tbSettingsFRImperial)
-        Me.gbSettingsJogging.Controls.Add(Me.Label30)
-        Me.gbSettingsJogging.Controls.Add(Me.cbSettingsMetric)
-        Me.gbSettingsJogging.Controls.Add(Me.tbSettingsFIImperial)
-        Me.gbSettingsJogging.Location = New System.Drawing.Point(607, 19)
-        Me.gbSettingsJogging.Name = "gbSettingsJogging"
-        Me.gbSettingsJogging.Size = New System.Drawing.Size(220, 324)
-        Me.gbSettingsJogging.TabIndex = 0
-        Me.gbSettingsJogging.TabStop = False
-        Me.gbSettingsJogging.Text = "Jogging"
-        '
-        'btnSettingsRefreshJogging
-        '
-        Me.btnSettingsRefreshJogging.Location = New System.Drawing.Point(6, 295)
-        Me.btnSettingsRefreshJogging.Name = "btnSettingsRefreshJogging"
-        Me.btnSettingsRefreshJogging.Size = New System.Drawing.Size(75, 23)
-        Me.btnSettingsRefreshJogging.TabIndex = 11
-        Me.btnSettingsRefreshJogging.Tag = "Jogging"
-        Me.btnSettingsRefreshJogging.Text = "Refresh"
-        Me.btnSettingsRefreshJogging.UseVisualStyleBackColor = True
-        '
-        'Label41
-        '
-        Me.Label41.AutoSize = True
-        Me.Label41.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label41.Location = New System.Drawing.Point(48, 167)
-        Me.Label41.Name = "Label41"
-        Me.Label41.Size = New System.Drawing.Size(158, 13)
-        Me.Label41.TabIndex = 26
-        Me.Label41.Text = "Button Repeat Rate, r/sec"
-        '
-        'Label40
-        '
-        Me.Label40.AutoSize = True
-        Me.Label40.Location = New System.Drawing.Point(129, 244)
-        Me.Label40.Name = "Label40"
-        Me.Label40.Size = New System.Drawing.Size(78, 13)
-        Me.Label40.TabIndex = 25
-        Me.Label40.Text = "Z Repeat Rate"
-        '
-        'Label39
-        '
-        Me.Label39.AutoSize = True
-        Me.Label39.Location = New System.Drawing.Point(129, 218)
-        Me.Label39.Name = "Label39"
-        Me.Label39.Size = New System.Drawing.Size(78, 13)
-        Me.Label39.TabIndex = 24
-        Me.Label39.Text = "Y Repeat Rate"
-        '
-        'Label38
-        '
-        Me.Label38.AutoSize = True
-        Me.Label38.Location = New System.Drawing.Point(129, 192)
-        Me.Label38.Name = "Label38"
-        Me.Label38.Size = New System.Drawing.Size(78, 13)
-        Me.Label38.TabIndex = 23
-        Me.Label38.Text = "X Repeat Rate"
-        '
-        'Label35
-        '
-        Me.Label35.AutoSize = True
-        Me.Label35.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label35.Location = New System.Drawing.Point(136, 104)
-        Me.Label35.Name = "Label35"
-        Me.Label35.Size = New System.Drawing.Size(42, 13)
-        Me.Label35.TabIndex = 19
-        Me.Label35.Text = "Metric"
-        '
-        'Label34
-        '
-        Me.Label34.AutoSize = True
-        Me.Label34.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label34.Location = New System.Drawing.Point(136, 38)
-        Me.Label34.Name = "Label34"
-        Me.Label34.Size = New System.Drawing.Size(51, 13)
-        Me.Label34.TabIndex = 18
-        Me.Label34.Text = "Imperial"
-        '
-        'Label32
-        '
-        Me.Label32.AutoSize = True
-        Me.Label32.Location = New System.Drawing.Point(129, 146)
-        Me.Label32.Name = "Label32"
-        Me.Label32.Size = New System.Drawing.Size(62, 13)
-        Me.Label32.TabIndex = 17
-        Me.Label32.Text = "Feed Rates"
-        '
-        'Label33
-        '
-        Me.Label33.AutoSize = True
-        Me.Label33.Location = New System.Drawing.Point(129, 120)
-        Me.Label33.Name = "Label33"
-        Me.Label33.Size = New System.Drawing.Size(86, 13)
-        Me.Label33.TabIndex = 15
-        Me.Label33.Text = "Feed Increments"
-        '
-        'Label31
-        '
-        Me.Label31.AutoSize = True
-        Me.Label31.Location = New System.Drawing.Point(129, 85)
-        Me.Label31.Name = "Label31"
-        Me.Label31.Size = New System.Drawing.Size(62, 13)
-        Me.Label31.TabIndex = 13
-        Me.Label31.Text = "Feed Rates"
-        '
-        'Label30
-        '
-        Me.Label30.AutoSize = True
-        Me.Label30.Location = New System.Drawing.Point(129, 59)
-        Me.Label30.Name = "Label30"
-        Me.Label30.Size = New System.Drawing.Size(86, 13)
-        Me.Label30.TabIndex = 11
-        Me.Label30.Text = "Feed Increments"
-        '
-        'ofdGcodeFile
-        '
-        Me.ofdGcodeFile.DefaultExt = "ngc"
-        Me.ofdGcodeFile.FileName = "*.*"
-        Me.ofdGcodeFile.Filter = "All files (*.*)|*.*"
-        '
-        'sfdOffsets
-        '
-        Me.sfdOffsets.DefaultExt = "xml"
-        Me.sfdOffsets.Filter = "WorkOffset Files|*.xml"
-        '
-        'ofdOffsets
-        '
-        Me.ofdOffsets.DefaultExt = "xml"
-        Me.ofdOffsets.FileName = "OpenFileDialog1"
-        Me.ofdOffsets.Filter = "WorkOffset Files|*.xml"
-        '
-        'btnProbeZn
-        '
-        Me.btnProbeZn.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.btnProbeZn.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold)
-        Me.btnProbeZn.Location = New System.Drawing.Point(340, 242)
-        Me.btnProbeZn.Name = "btnProbeZn"
-        Me.btnProbeZn.Size = New System.Drawing.Size(34, 20)
-        Me.btnProbeZn.TabIndex = 20
-        Me.btnProbeZn.Tag = "PZ-"
-        Me.btnProbeZn.Text = "P-"
-        Me.ToolTip1.SetToolTip(Me.btnProbeZn, "Start probing cycle in negative Z direction")
-        Me.btnProbeZn.UseVisualStyleBackColor = True
-        '
-        'GroupBox2
-        '
-        Me.GroupBox2.Controls.Add(Me.Label44)
-        Me.GroupBox2.Controls.Add(Me.tbProbeToolDiameter)
-        Me.GroupBox2.Controls.Add(Me.Label22)
-        Me.GroupBox2.Controls.Add(Me.tbProbePlateThickness)
-        Me.GroupBox2.Controls.Add(Me.Label46)
-        Me.GroupBox2.Controls.Add(Me.Label48)
-        Me.GroupBox2.Controls.Add(Me.tbProbePullOff)
-        Me.GroupBox2.Controls.Add(Me.tbProbeFeed)
-        Me.GroupBox2.Controls.Add(Me.Label49)
-        Me.GroupBox2.Controls.Add(Me.tbProbeDistance)
-        Me.GroupBox2.Location = New System.Drawing.Point(607, 349)
-        Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(220, 157)
-        Me.GroupBox2.TabIndex = 112
-        Me.GroupBox2.TabStop = False
-        Me.GroupBox2.Text = "Probing"
-        '
-        'Label22
-        '
-        Me.Label22.AutoSize = True
-        Me.Label22.Location = New System.Drawing.Point(70, 96)
-        Me.Label22.Name = "Label22"
-        Me.Label22.Size = New System.Drawing.Size(109, 13)
-        Me.Label22.TabIndex = 20
-        Me.Label22.Text = "Probe plate thickness"
-        '
-        'Label46
-        '
-        Me.Label46.AutoSize = True
-        Me.Label46.Location = New System.Drawing.Point(70, 70)
-        Me.Label46.Name = "Label46"
-        Me.Label46.Size = New System.Drawing.Size(82, 13)
-        Me.Label46.TabIndex = 5
-        Me.Label46.Text = "Pull off distance"
-        '
-        'Label48
-        '
-        Me.Label48.AutoSize = True
-        Me.Label48.Location = New System.Drawing.Point(70, 44)
-        Me.Label48.Name = "Label48"
-        Me.Label48.Size = New System.Drawing.Size(31, 13)
-        Me.Label48.TabIndex = 4
-        Me.Label48.Text = "Feed"
-        '
-        'Label49
-        '
-        Me.Label49.AutoSize = True
-        Me.Label49.Location = New System.Drawing.Point(70, 22)
-        Me.Label49.Name = "Label49"
-        Me.Label49.Size = New System.Drawing.Size(94, 13)
-        Me.Label49.TabIndex = 1
-        Me.Label49.Text = "Maximum distance"
-        '
-        'btnProbeYp
-        '
-        Me.btnProbeYp.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.btnProbeYp.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold)
-        Me.btnProbeYp.Location = New System.Drawing.Point(340, 96)
-        Me.btnProbeYp.Name = "btnProbeYp"
-        Me.btnProbeYp.Size = New System.Drawing.Size(34, 20)
-        Me.btnProbeYp.TabIndex = 21
-        Me.btnProbeYp.Tag = "PY+"
-        Me.btnProbeYp.Text = "P+"
-        Me.ToolTip1.SetToolTip(Me.btnProbeYp, "Start probing cycle in positive Y direction")
-        Me.btnProbeYp.UseVisualStyleBackColor = True
-        '
-        'btnProbeYn
-        '
-        Me.btnProbeYn.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.btnProbeYn.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold)
-        Me.btnProbeYn.Location = New System.Drawing.Point(340, 154)
-        Me.btnProbeYn.Name = "btnProbeYn"
-        Me.btnProbeYn.Size = New System.Drawing.Size(34, 20)
-        Me.btnProbeYn.TabIndex = 22
-        Me.btnProbeYn.Tag = "PY-"
-        Me.btnProbeYn.Text = "P-"
-        Me.ToolTip1.SetToolTip(Me.btnProbeYn, "Start probing cycle in negative Y direction")
-        Me.btnProbeYn.UseVisualStyleBackColor = True
-        '
-        'btnProbeXp
-        '
-        Me.btnProbeXp.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.btnProbeXp.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold)
-        Me.btnProbeXp.Location = New System.Drawing.Point(340, 8)
-        Me.btnProbeXp.Name = "btnProbeXp"
-        Me.btnProbeXp.Size = New System.Drawing.Size(34, 20)
-        Me.btnProbeXp.TabIndex = 23
-        Me.btnProbeXp.Tag = "PX+"
-        Me.btnProbeXp.Text = "P+"
-        Me.ToolTip1.SetToolTip(Me.btnProbeXp, "Start probing cycle in positive X direction")
-        Me.btnProbeXp.UseVisualStyleBackColor = True
-        '
-        'btnProbeXn
-        '
-        Me.btnProbeXn.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.btnProbeXn.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold)
-        Me.btnProbeXn.Location = New System.Drawing.Point(340, 66)
-        Me.btnProbeXn.Name = "btnProbeXn"
-        Me.btnProbeXn.Size = New System.Drawing.Size(34, 20)
-        Me.btnProbeXn.TabIndex = 24
-        Me.btnProbeXn.Tag = "PX-"
-        Me.btnProbeXn.Text = "P-"
-        Me.ToolTip1.SetToolTip(Me.btnProbeXn, "Start probing cycle in negative X direction")
-        Me.btnProbeXn.UseVisualStyleBackColor = True
-        '
-        'cbVerbose
-        '
-        Me.cbVerbose.AutoSize = True
-        Me.cbVerbose.Checked = Global.GrblPanel.My.MySettings.Default.StatusVerbose
-        Me.cbVerbose.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.GrblPanel.My.MySettings.Default, "statusVerbose", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.cbVerbose.Location = New System.Drawing.Point(87, 20)
-        Me.cbVerbose.Name = "cbVerbose"
-        Me.cbVerbose.Size = New System.Drawing.Size(83, 17)
-        Me.cbVerbose.TabIndex = 15
-        Me.cbVerbose.Text = "Verbose      "
-        Me.cbVerbose.UseVisualStyleBackColor = True
-        '
-        'tbProbePlateThickness
-        '
-        Me.tbProbePlateThickness.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.GrblPanel.My.MySettings.Default, "ProbePlateThickness", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.tbProbePlateThickness.Location = New System.Drawing.Point(6, 94)
-        Me.tbProbePlateThickness.Name = "tbProbePlateThickness"
-        Me.tbProbePlateThickness.Size = New System.Drawing.Size(45, 20)
-        Me.tbProbePlateThickness.TabIndex = 19
-        Me.tbProbePlateThickness.Text = Global.GrblPanel.My.MySettings.Default.ProbePlateThickness
-        Me.ToolTip1.SetToolTip(Me.tbProbePlateThickness, resources.GetString("tbProbePlateThickness.ToolTip"))
-        '
-        'tbProbePullOff
-        '
-        Me.tbProbePullOff.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.GrblPanel.My.MySettings.Default, "ProbePullOff", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.tbProbePullOff.Location = New System.Drawing.Point(6, 68)
-        Me.tbProbePullOff.Name = "tbProbePullOff"
-        Me.tbProbePullOff.Size = New System.Drawing.Size(45, 20)
-        Me.tbProbePullOff.TabIndex = 3
-        Me.tbProbePullOff.Text = Global.GrblPanel.My.MySettings.Default.ProbePullOff
-        Me.ToolTip1.SetToolTip(Me.tbProbePullOff, "After a successful probing cycle the tool" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "will be moved away from the probe plat" &
-        "e" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "by the given distance." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Pay attention to your metric/imperial setting!")
-        '
-        'tbProbeFeed
-        '
-        Me.tbProbeFeed.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.GrblPanel.My.MySettings.Default, "ProbeFeed", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.tbProbeFeed.Location = New System.Drawing.Point(6, 42)
-        Me.tbProbeFeed.Name = "tbProbeFeed"
-        Me.tbProbeFeed.Size = New System.Drawing.Size(45, 20)
-        Me.tbProbeFeed.TabIndex = 2
-        Me.tbProbeFeed.Text = Global.GrblPanel.My.MySettings.Default.ProbeFeed
-        Me.ToolTip1.SetToolTip(Me.tbProbeFeed, "This is the feed rate used during probing. Choose it " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "as low as possible to mini" &
-        "mize tool impact and " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "to increase probing accuracy." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Pay attention to your me" &
-        "tric/imperial setting!")
-        '
-        'tbProbeDistance
-        '
-        Me.tbProbeDistance.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.GrblPanel.My.MySettings.Default, "ProbeDistance", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.tbProbeDistance.Location = New System.Drawing.Point(6, 19)
-        Me.tbProbeDistance.Name = "tbProbeDistance"
-        Me.tbProbeDistance.Size = New System.Drawing.Size(45, 20)
-        Me.tbProbeDistance.TabIndex = 0
-        Me.tbProbeDistance.Text = Global.GrblPanel.My.MySettings.Default.ProbeDistance
-        Me.ToolTip1.SetToolTip(Me.tbProbeDistance, "This is the maximum distance the tool is moved during " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "the probe cycle. If no co" &
-        "ntact is made within this distance," & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "probing will fail." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Pay attention to your" &
-        " metric/imperial setting!")
-        '
-        'tbSettingsGrblLastParam
-        '
-        Me.tbSettingsGrblLastParam.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.GrblPanel.My.MySettings.Default, "GrblLastParamID", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.tbSettingsGrblLastParam.Location = New System.Drawing.Point(6, 552)
-        Me.tbSettingsGrblLastParam.Name = "tbSettingsGrblLastParam"
-        Me.tbSettingsGrblLastParam.Size = New System.Drawing.Size(45, 20)
-        Me.tbSettingsGrblLastParam.TabIndex = 6
-        Me.tbSettingsGrblLastParam.Text = Global.GrblPanel.My.MySettings.Default.GrblLastParamID
-        Me.ToolTip1.SetToolTip(Me.tbSettingsGrblLastParam, "Change this to reflect the highest Grbl Parameter number")
-        '
-        'tbSettingsDefaultExt
-        '
-        Me.tbSettingsDefaultExt.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.GrblPanel.My.MySettings.Default, "DefaultFileExt", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.tbSettingsDefaultExt.Location = New System.Drawing.Point(6, 120)
-        Me.tbSettingsDefaultExt.Name = "tbSettingsDefaultExt"
-        Me.tbSettingsDefaultExt.Size = New System.Drawing.Size(45, 20)
-        Me.tbSettingsDefaultExt.TabIndex = 22
-        Me.tbSettingsDefaultExt.Text = Global.GrblPanel.My.MySettings.Default.DefaultFileExt
         '
         'tbSettingsStartupDelay
         '
@@ -2896,6 +2662,34 @@ Partial Class GrblGui
         Me.cbStatusPollEnable.Text = "Status Poll"
         Me.cbStatusPollEnable.UseVisualStyleBackColor = True
         '
+        'btnSettingsRefreshMisc
+        '
+        Me.btnSettingsRefreshMisc.Location = New System.Drawing.Point(6, 243)
+        Me.btnSettingsRefreshMisc.Name = "btnSettingsRefreshMisc"
+        Me.btnSettingsRefreshMisc.Size = New System.Drawing.Size(75, 23)
+        Me.btnSettingsRefreshMisc.TabIndex = 6
+        Me.btnSettingsRefreshMisc.Tag = "Misc"
+        Me.btnSettingsRefreshMisc.Text = "Refresh"
+        Me.btnSettingsRefreshMisc.UseVisualStyleBackColor = True
+        '
+        'Label37
+        '
+        Me.Label37.AutoSize = True
+        Me.Label37.Location = New System.Drawing.Point(70, 70)
+        Me.Label37.Name = "Label37"
+        Me.Label37.Size = New System.Drawing.Size(77, 13)
+        Me.Label37.TabIndex = 5
+        Me.Label37.Text = "RBuf Max Size"
+        '
+        'Label36
+        '
+        Me.Label36.AutoSize = True
+        Me.Label36.Location = New System.Drawing.Point(70, 44)
+        Me.Label36.Name = "Label36"
+        Me.Label36.Size = New System.Drawing.Size(61, 13)
+        Me.Label36.TabIndex = 4
+        Me.Label36.Text = "Q Max Size"
+        '
         'tbSettingsRBuffSize
         '
         Me.tbSettingsRBuffSize.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.GrblPanel.My.MySettings.Default, "RBuffMaxSize", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
@@ -2914,6 +2708,15 @@ Partial Class GrblGui
         Me.tbSettingsQSize.TabIndex = 2
         Me.tbSettingsQSize.Text = Global.GrblPanel.My.MySettings.Default.QBuffMaxSize
         '
+        'Label26
+        '
+        Me.Label26.AutoSize = True
+        Me.Label26.Location = New System.Drawing.Point(70, 22)
+        Me.Label26.Name = "Label26"
+        Me.Label26.Size = New System.Drawing.Size(84, 13)
+        Me.Label26.TabIndex = 1
+        Me.Label26.Text = "Poll Interval (ms)"
+        '
         'tbSettingsPollRate
         '
         Me.tbSettingsPollRate.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.GrblPanel.My.MySettings.Default, "statusPollInterval", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
@@ -2922,6 +2725,37 @@ Partial Class GrblGui
         Me.tbSettingsPollRate.Size = New System.Drawing.Size(45, 20)
         Me.tbSettingsPollRate.TabIndex = 0
         Me.tbSettingsPollRate.Text = Global.GrblPanel.My.MySettings.Default.StatusPollInterval
+        '
+        'gbSettingsPosition
+        '
+        Me.gbSettingsPosition.Controls.Add(Me.Label8)
+        Me.gbSettingsPosition.Controls.Add(Me.tbSettingsSpclPosition2)
+        Me.gbSettingsPosition.Controls.Add(Me.btnSettingsRefreshPosition)
+        Me.gbSettingsPosition.Controls.Add(Me.Label29)
+        Me.gbSettingsPosition.Controls.Add(Me.tbWorkZ0Cmd)
+        Me.gbSettingsPosition.Controls.Add(Me.Label28)
+        Me.gbSettingsPosition.Controls.Add(Me.tbWorkY0Cmd)
+        Me.gbSettingsPosition.Controls.Add(Me.Label13)
+        Me.gbSettingsPosition.Controls.Add(Me.Label12)
+        Me.gbSettingsPosition.Controls.Add(Me.tbWorkX0Cmd)
+        Me.gbSettingsPosition.Controls.Add(Me.tbSettingsZeroXYZCmd)
+        Me.gbSettingsPosition.Controls.Add(Me.Label11)
+        Me.gbSettingsPosition.Controls.Add(Me.tbSettingsSpclPosition1)
+        Me.gbSettingsPosition.Location = New System.Drawing.Point(362, 19)
+        Me.gbSettingsPosition.Name = "gbSettingsPosition"
+        Me.gbSettingsPosition.Size = New System.Drawing.Size(239, 209)
+        Me.gbSettingsPosition.TabIndex = 1
+        Me.gbSettingsPosition.TabStop = False
+        Me.gbSettingsPosition.Text = "Position"
+        '
+        'Label8
+        '
+        Me.Label8.AutoSize = True
+        Me.Label8.Location = New System.Drawing.Point(135, 47)
+        Me.Label8.Name = "Label8"
+        Me.Label8.Size = New System.Drawing.Size(94, 13)
+        Me.Label8.TabIndex = 12
+        Me.Label8.Text = "GoTo Spcl Posn 2"
         '
         'tbSettingsSpclPosition2
         '
@@ -2932,6 +2766,25 @@ Partial Class GrblGui
         Me.tbSettingsSpclPosition2.TabIndex = 11
         Me.tbSettingsSpclPosition2.Text = Global.GrblPanel.My.MySettings.Default.MachineSpclPosition2
         '
+        'btnSettingsRefreshPosition
+        '
+        Me.btnSettingsRefreshPosition.Location = New System.Drawing.Point(6, 180)
+        Me.btnSettingsRefreshPosition.Name = "btnSettingsRefreshPosition"
+        Me.btnSettingsRefreshPosition.Size = New System.Drawing.Size(75, 23)
+        Me.btnSettingsRefreshPosition.TabIndex = 10
+        Me.btnSettingsRefreshPosition.Tag = "Position"
+        Me.btnSettingsRefreshPosition.Text = "Refresh"
+        Me.btnSettingsRefreshPosition.UseVisualStyleBackColor = True
+        '
+        'Label29
+        '
+        Me.Label29.AutoSize = True
+        Me.Label29.Location = New System.Drawing.Point(135, 150)
+        Me.Label29.Name = "Label29"
+        Me.Label29.Size = New System.Drawing.Size(75, 13)
+        Me.Label29.TabIndex = 9
+        Me.Label29.Text = "Work Z 0 cmd"
+        '
         'tbWorkZ0Cmd
         '
         Me.tbWorkZ0Cmd.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.GrblPanel.My.MySettings.Default, "WorkZ0Cmd", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
@@ -2941,6 +2794,15 @@ Partial Class GrblGui
         Me.tbWorkZ0Cmd.TabIndex = 8
         Me.tbWorkZ0Cmd.Text = Global.GrblPanel.My.MySettings.Default.WorkZ0Cmd
         '
+        'Label28
+        '
+        Me.Label28.AutoSize = True
+        Me.Label28.Location = New System.Drawing.Point(135, 124)
+        Me.Label28.Name = "Label28"
+        Me.Label28.Size = New System.Drawing.Size(75, 13)
+        Me.Label28.TabIndex = 7
+        Me.Label28.Text = "Work Y 0 cmd"
+        '
         'tbWorkY0Cmd
         '
         Me.tbWorkY0Cmd.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.GrblPanel.My.MySettings.Default, "WorkY0Cmd", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
@@ -2949,6 +2811,24 @@ Partial Class GrblGui
         Me.tbWorkY0Cmd.Size = New System.Drawing.Size(117, 20)
         Me.tbWorkY0Cmd.TabIndex = 6
         Me.tbWorkY0Cmd.Text = Global.GrblPanel.My.MySettings.Default.WorkY0Cmd
+        '
+        'Label13
+        '
+        Me.Label13.AutoSize = True
+        Me.Label13.Location = New System.Drawing.Point(135, 99)
+        Me.Label13.Name = "Label13"
+        Me.Label13.Size = New System.Drawing.Size(75, 13)
+        Me.Label13.TabIndex = 5
+        Me.Label13.Text = "Work X 0 cmd"
+        '
+        'Label12
+        '
+        Me.Label12.AutoSize = True
+        Me.Label12.Location = New System.Drawing.Point(135, 73)
+        Me.Label12.Name = "Label12"
+        Me.Label12.Size = New System.Drawing.Size(67, 13)
+        Me.Label12.TabIndex = 4
+        Me.Label12.Text = "Zero All Cmd"
         '
         'tbWorkX0Cmd
         '
@@ -2968,6 +2848,16 @@ Partial Class GrblGui
         Me.tbSettingsZeroXYZCmd.TabIndex = 2
         Me.tbSettingsZeroXYZCmd.Text = Global.GrblPanel.My.MySettings.Default.Work0Cmd
         '
+        'Label11
+        '
+        Me.Label11.AutoSize = True
+        Me.Label11.Location = New System.Drawing.Point(135, 21)
+        Me.Label11.Name = "Label11"
+        Me.Label11.Size = New System.Drawing.Size(94, 13)
+        Me.Label11.TabIndex = 1
+        Me.Label11.Text = "Go To Spcl Posn1"
+        Me.ToolTip1.SetToolTip(Me.Label11, "Also known as Soft Home")
+        '
         'tbSettingsSpclPosition1
         '
         Me.tbSettingsSpclPosition1.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.GrblPanel.My.MySettings.Default, "MachineSpclPosition1", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
@@ -2976,6 +2866,35 @@ Partial Class GrblGui
         Me.tbSettingsSpclPosition1.Size = New System.Drawing.Size(117, 20)
         Me.tbSettingsSpclPosition1.TabIndex = 0
         Me.tbSettingsSpclPosition1.Text = Global.GrblPanel.My.MySettings.Default.MachineSpclPosition1
+        '
+        'gbSettingsJogging
+        '
+        Me.gbSettingsJogging.Controls.Add(Me.cbSettingsKeyboardJogging)
+        Me.gbSettingsJogging.Controls.Add(Me.btnSettingsRefreshJogging)
+        Me.gbSettingsJogging.Controls.Add(Me.Label41)
+        Me.gbSettingsJogging.Controls.Add(Me.Label40)
+        Me.gbSettingsJogging.Controls.Add(Me.Label39)
+        Me.gbSettingsJogging.Controls.Add(Me.Label38)
+        Me.gbSettingsJogging.Controls.Add(Me.tbSettingsZRepeat)
+        Me.gbSettingsJogging.Controls.Add(Me.tbSettingsYRepeat)
+        Me.gbSettingsJogging.Controls.Add(Me.tbSettingsXRepeat)
+        Me.gbSettingsJogging.Controls.Add(Me.Label35)
+        Me.gbSettingsJogging.Controls.Add(Me.Label34)
+        Me.gbSettingsJogging.Controls.Add(Me.Label32)
+        Me.gbSettingsJogging.Controls.Add(Me.tbSettingsFRMetric)
+        Me.gbSettingsJogging.Controls.Add(Me.Label33)
+        Me.gbSettingsJogging.Controls.Add(Me.tbSettingsFIMetric)
+        Me.gbSettingsJogging.Controls.Add(Me.Label31)
+        Me.gbSettingsJogging.Controls.Add(Me.tbSettingsFRImperial)
+        Me.gbSettingsJogging.Controls.Add(Me.Label30)
+        Me.gbSettingsJogging.Controls.Add(Me.cbSettingsMetric)
+        Me.gbSettingsJogging.Controls.Add(Me.tbSettingsFIImperial)
+        Me.gbSettingsJogging.Location = New System.Drawing.Point(607, 19)
+        Me.gbSettingsJogging.Name = "gbSettingsJogging"
+        Me.gbSettingsJogging.Size = New System.Drawing.Size(220, 324)
+        Me.gbSettingsJogging.TabIndex = 0
+        Me.gbSettingsJogging.TabStop = False
+        Me.gbSettingsJogging.Text = "Jogging"
         '
         'cbSettingsKeyboardJogging
         '
@@ -2989,6 +2908,53 @@ Partial Class GrblGui
         Me.cbSettingsKeyboardJogging.Text = "Enable keyboard arrows"
         Me.ToolTip1.SetToolTip(Me.cbSettingsKeyboardJogging, "Allow arrows, pg up, pg dn to do jogging")
         Me.cbSettingsKeyboardJogging.UseVisualStyleBackColor = True
+        '
+        'btnSettingsRefreshJogging
+        '
+        Me.btnSettingsRefreshJogging.Location = New System.Drawing.Point(6, 295)
+        Me.btnSettingsRefreshJogging.Name = "btnSettingsRefreshJogging"
+        Me.btnSettingsRefreshJogging.Size = New System.Drawing.Size(75, 23)
+        Me.btnSettingsRefreshJogging.TabIndex = 11
+        Me.btnSettingsRefreshJogging.Tag = "Jogging"
+        Me.btnSettingsRefreshJogging.Text = "Refresh"
+        Me.btnSettingsRefreshJogging.UseVisualStyleBackColor = True
+        '
+        'Label41
+        '
+        Me.Label41.AutoSize = True
+        Me.Label41.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label41.Location = New System.Drawing.Point(48, 167)
+        Me.Label41.Name = "Label41"
+        Me.Label41.Size = New System.Drawing.Size(158, 13)
+        Me.Label41.TabIndex = 26
+        Me.Label41.Text = "Button Repeat Rate, r/sec"
+        '
+        'Label40
+        '
+        Me.Label40.AutoSize = True
+        Me.Label40.Location = New System.Drawing.Point(129, 244)
+        Me.Label40.Name = "Label40"
+        Me.Label40.Size = New System.Drawing.Size(78, 13)
+        Me.Label40.TabIndex = 25
+        Me.Label40.Text = "Z Repeat Rate"
+        '
+        'Label39
+        '
+        Me.Label39.AutoSize = True
+        Me.Label39.Location = New System.Drawing.Point(129, 218)
+        Me.Label39.Name = "Label39"
+        Me.Label39.Size = New System.Drawing.Size(78, 13)
+        Me.Label39.TabIndex = 24
+        Me.Label39.Text = "Y Repeat Rate"
+        '
+        'Label38
+        '
+        Me.Label38.AutoSize = True
+        Me.Label38.Location = New System.Drawing.Point(129, 192)
+        Me.Label38.Name = "Label38"
+        Me.Label38.Size = New System.Drawing.Size(78, 13)
+        Me.Label38.TabIndex = 23
+        Me.Label38.Text = "X Repeat Rate"
         '
         'tbSettingsZRepeat
         '
@@ -3017,6 +2983,35 @@ Partial Class GrblGui
         Me.tbSettingsXRepeat.TabIndex = 20
         Me.tbSettingsXRepeat.Text = Global.GrblPanel.My.MySettings.Default.JoggingXRepeat
         '
+        'Label35
+        '
+        Me.Label35.AutoSize = True
+        Me.Label35.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label35.Location = New System.Drawing.Point(136, 104)
+        Me.Label35.Name = "Label35"
+        Me.Label35.Size = New System.Drawing.Size(42, 13)
+        Me.Label35.TabIndex = 19
+        Me.Label35.Text = "Metric"
+        '
+        'Label34
+        '
+        Me.Label34.AutoSize = True
+        Me.Label34.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label34.Location = New System.Drawing.Point(136, 38)
+        Me.Label34.Name = "Label34"
+        Me.Label34.Size = New System.Drawing.Size(51, 13)
+        Me.Label34.TabIndex = 18
+        Me.Label34.Text = "Imperial"
+        '
+        'Label32
+        '
+        Me.Label32.AutoSize = True
+        Me.Label32.Location = New System.Drawing.Point(129, 146)
+        Me.Label32.Name = "Label32"
+        Me.Label32.Size = New System.Drawing.Size(62, 13)
+        Me.Label32.TabIndex = 17
+        Me.Label32.Text = "Feed Rates"
+        '
         'tbSettingsFRMetric
         '
         Me.tbSettingsFRMetric.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.GrblPanel.My.MySettings.Default, "JoggingFRMetric", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
@@ -3025,6 +3020,15 @@ Partial Class GrblGui
         Me.tbSettingsFRMetric.Size = New System.Drawing.Size(117, 20)
         Me.tbSettingsFRMetric.TabIndex = 16
         Me.tbSettingsFRMetric.Text = Global.GrblPanel.My.MySettings.Default.JoggingFRMetric
+        '
+        'Label33
+        '
+        Me.Label33.AutoSize = True
+        Me.Label33.Location = New System.Drawing.Point(129, 120)
+        Me.Label33.Name = "Label33"
+        Me.Label33.Size = New System.Drawing.Size(86, 13)
+        Me.Label33.TabIndex = 15
+        Me.Label33.Text = "Feed Increments"
         '
         'tbSettingsFIMetric
         '
@@ -3035,6 +3039,15 @@ Partial Class GrblGui
         Me.tbSettingsFIMetric.TabIndex = 14
         Me.tbSettingsFIMetric.Text = Global.GrblPanel.My.MySettings.Default.JoggingFIMEtric
         '
+        'Label31
+        '
+        Me.Label31.AutoSize = True
+        Me.Label31.Location = New System.Drawing.Point(129, 85)
+        Me.Label31.Name = "Label31"
+        Me.Label31.Size = New System.Drawing.Size(62, 13)
+        Me.Label31.TabIndex = 13
+        Me.Label31.Text = "Feed Rates"
+        '
         'tbSettingsFRImperial
         '
         Me.tbSettingsFRImperial.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.GrblPanel.My.MySettings.Default, "JoggingFRImperial", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
@@ -3043,6 +3056,15 @@ Partial Class GrblGui
         Me.tbSettingsFRImperial.Size = New System.Drawing.Size(117, 20)
         Me.tbSettingsFRImperial.TabIndex = 12
         Me.tbSettingsFRImperial.Text = Global.GrblPanel.My.MySettings.Default.JoggingFRImperial
+        '
+        'Label30
+        '
+        Me.Label30.AutoSize = True
+        Me.Label30.Location = New System.Drawing.Point(129, 59)
+        Me.Label30.Name = "Label30"
+        Me.Label30.Size = New System.Drawing.Size(86, 13)
+        Me.Label30.TabIndex = 11
+        Me.Label30.Text = "Feed Increments"
         '
         'cbSettingsMetric
         '
@@ -3065,24 +3087,21 @@ Partial Class GrblGui
         Me.tbSettingsFIImperial.TabIndex = 10
         Me.tbSettingsFIImperial.Text = Global.GrblPanel.My.MySettings.Default.JoggingFIImperial
         '
-        'Label44
+        'ofdGcodeFile
         '
-        Me.Label44.AutoSize = True
-        Me.Label44.Location = New System.Drawing.Point(70, 122)
-        Me.Label44.Name = "Label44"
-        Me.Label44.Size = New System.Drawing.Size(98, 13)
-        Me.Label44.TabIndex = 22
-        Me.Label44.Text = "Probe tool diameter"
+        Me.ofdGcodeFile.DefaultExt = "ngc"
+        Me.ofdGcodeFile.Filter = "All files (*.*)|*.*"
         '
-        'tbProbeToolDiameter
+        'sfdOffsets
         '
-        Me.tbProbeToolDiameter.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.GrblPanel.My.MySettings.Default, "ProbeToolDiameter", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.tbProbeToolDiameter.Location = New System.Drawing.Point(6, 120)
-        Me.tbProbeToolDiameter.Name = "tbProbeToolDiameter"
-        Me.tbProbeToolDiameter.Size = New System.Drawing.Size(45, 20)
-        Me.tbProbeToolDiameter.TabIndex = 21
-        Me.tbProbeToolDiameter.Text = Global.GrblPanel.My.MySettings.Default.ProbeToolDiameter
-        Me.ToolTip1.SetToolTip(Me.tbProbeToolDiameter, resources.GetString("tbProbeToolDiameter.ToolTip"))
+        Me.sfdOffsets.DefaultExt = "xml"
+        Me.sfdOffsets.Filter = "WorkOffset Files|*.xml"
+        '
+        'ofdOffsets
+        '
+        Me.ofdOffsets.DefaultExt = "xml"
+        Me.ofdOffsets.FileName = "OpenFileDialog1"
+        Me.ofdOffsets.Filter = "WorkOffset Files|*.xml"
         '
         'GrblGui
         '
@@ -3142,6 +3161,8 @@ Partial Class GrblGui
         Me.tpOffsets.PerformLayout()
         Me.tabPgSettings.ResumeLayout(False)
         Me.tabPgSettings.PerformLayout()
+        Me.GroupBox2.ResumeLayout(False)
+        Me.GroupBox2.PerformLayout()
         Me.gbGrblSettings.ResumeLayout(False)
         Me.gbGrblSettings.PerformLayout()
         CType(Me.dgGrblSettings, System.ComponentModel.ISupportInitialize).EndInit()
@@ -3154,8 +3175,6 @@ Partial Class GrblGui
         Me.gbSettingsJogging.ResumeLayout(False)
         Me.gbSettingsJogging.PerformLayout()
         CType(Me.GrblSettingsBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.GroupBox2.ResumeLayout(False)
-        Me.GroupBox2.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -3418,4 +3437,6 @@ Partial Class GrblGui
     Friend WithEvents btnProbeYp As Button
     Friend WithEvents Label44 As Label
     Friend WithEvents tbProbeToolDiameter As TextBox
+    Friend WithEvents TransmissionProgress As ProgressBar
+    Friend WithEvents GrblBufferLevel As ProgressBar
 End Class

@@ -126,8 +126,8 @@ Partial Class GrblGui
                     End If
 
                     ' probing was successful, set new location and pull off
-                    gcode.sendGCodeLine("G90G10L20P0" + _ProbeAxis + centerCorrection.ToString())
-                    gcode.sendGCodeLine("G0" + _ProbeAxis + pullOffDistance.ToString())
+                    grblQueue.enqueue("G90G10L20P0" + _ProbeAxis + centerCorrection.ToString())
+                    grblQueue.enqueue("G0" + _ProbeAxis + pullOffDistance.ToString())
                 Else
                     ' probing failed
                 End If
@@ -174,10 +174,15 @@ Partial Class GrblGui
         _IsProbing = True
 
         ' switch to absolute coordinates and set current axis position to zero
-        gcode.sendGCodeLine("G90G10L20P0" + _ProbeAxis + "0")
+
+        ' use G92 here because G10 writes to EEPROM -> reduce EEPROM wear
+        ' since directly after probing a G10 is issued, the normally discouraged
+        ' use of G92 together with probing is acceptable
+        ' grblQueue.enqueue("G90G10L20P0" + _ProbeAxis + "0")
+        grblQueue.enqueue("G90G92" + _ProbeAxis + "0")
 
         ' start probe cycle
-        gcode.sendGCodeLine("G38.2" + _ProbeAxis + _ProbeDirection + My.Settings.ProbeDistance + "F" + My.Settings.ProbeFeed)
+        grblQueue.enqueue("G38.2" + _ProbeAxis + _ProbeDirection + My.Settings.ProbeDistance + "F" + My.Settings.ProbeFeed)
 
         ' probing ends when GRBL responds with a line starting with "[PRB:"
 
