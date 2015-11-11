@@ -1,16 +1,19 @@
 ﻿Imports GrblPanel.GrblIF
 Imports System.Xml
+Imports System.Timers
+
 Partial Class GrblGui
     Public Class GrblOffsets
 
         Private _gui As GrblGui
+        Private _queue As GrblQueue
         Private _wtgForGrbl As Boolean = False
         Private _collecting As Boolean = False
         Private _offsets As New List(Of String)
 
         Public Sub New(ByRef gui As GrblGui)
             _gui = gui
-
+            _queue = gui.grblQueue
             AddHandler _gui.Connected, AddressOf GrblConnected
         End Sub
 
@@ -71,7 +74,7 @@ Partial Class GrblGui
         Public Sub LoadOffsets()
             ' Load Work and TLO Offsets
             ' This lets the user double click on values for which there is a fixture etc. for quick set up
-            If Not _gui.ofdOffsets.ShowDialog() = System.windows.forms.dialogresult.ok Then
+            If Not _gui.ofdOffsets.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
                 Return
             End If
 
@@ -118,10 +121,26 @@ Partial Class GrblGui
             End Get
         End Property
 
+        ''' <summary>
+        ''' Is called 1500 ms after opening the connection, sends "$#" to grbl
+        ''' to request the current configuration.
+        ''' </summary>
+        ''' <param name="sender"></param>
+        ''' <param name="e"></param>
+        Private Sub requestParameters(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+            _timer.Stop()
+            OffsetsWtgForGrbl = True
+            _queue.ExecuteImmediateCommand("$#")
+        End Sub
+
+        Shared _timer As System.Timers.Timer
         Private Sub GrblConnected()     ' Handles GrblGui.Connected Event
             ' We are now connected so ask for Offset data
-            OffsetsWtgForGrbl = True
-            gcode.sendGCodeLine("$#")
+            ' wait 1500 ms before issuing the command (on some systems the
+            ' request gets lost if sending "$#" directly after opening the connection)
+            _timer = New System.Timers.Timer(1500)
+            AddHandler _timer.Elapsed, New ElapsedEventHandler(AddressOf requestParameters)
+            _timer.Enabled = True
         End Sub
     End Class
 
@@ -150,12 +169,12 @@ Partial Class GrblGui
                 Case "G59"
                     index = "P6"
             End Select
-            gcode.sendGCodeLine("G10 L2 " + index + " X0 Y0 Z0")
+            grblQueue.ExecuteImmediateCommand("G10 L2 " + index + " X0 Y0 Z0")
         ElseIf tag.StartsWith("G28") Or tag.StartsWith("G30") Then
             ' set G28 or G30 to current Machine Position
-            gcode.sendGCodeLine(tag.Substring(0, 3) + ".1")
+            grblQueue.ExecuteImmediateCommand(tag.Substring(0, 3) + ".1")
         ElseIf tag.StartsWith("G43") Then
-            gcode.sendGCodeLine("G43.1 Z0")
+            grblQueue.ExecuteImmediateCommand("G43.1 Z0")
         End If
 
     End Sub
@@ -188,7 +207,7 @@ Partial Class GrblGui
                 Case "G59"
                     index = "P6"
             End Select
-            gcode.sendGCodeLine("G10 L2 " + index + " " + axis + tb.Text)
+            grblQueue.ExecuteImmediateCommand("G10 L2 " + index + " " + axis + tb.Text)
         End If
     End Sub
 
@@ -196,7 +215,7 @@ Partial Class GrblGui
         ' Ask Grbl to send us the present offsets
         offsets.OffsetsWtgForGrbl = True
         offsets.ClearParams()
-        gcode.sendGCodeLine("$#")
+        grblQueue.ExecuteImmediateCommand("$#")
     End Sub
 
     Public Sub showGrblOffsets(ByVal data As String)

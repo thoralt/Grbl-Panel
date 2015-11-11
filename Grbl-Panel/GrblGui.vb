@@ -19,7 +19,11 @@ Public Class GrblGui
     Public Sub myhandler(ByVal sender As Object, args As UnhandledExceptionEventArgs)
         ' Show exception in usable manner
         Dim e As Exception = DirectCast(args.ExceptionObject, Exception)
-        MessageBox.Show("Exception: " + e.Message + vbLf + e.InnerException.Message + vbLf + e.StackTrace)
+        If e.InnerException Is Nothing Then
+            MessageBox.Show("Exception: " + e.Message + vbLf + vbLf + e.StackTrace)
+        Else
+            MessageBox.Show("Exception: " + e.Message + vbLf + e.InnerException.Message + vbLf + e.StackTrace)
+        End If
     End Sub
 
 
@@ -50,10 +54,12 @@ Public Class GrblGui
         jogging = New GrblJogging(Me)
         position = New GrblPosition(Me)
         gcode = New GrblGcode(Me)
-        gcodeview = New GrblGcodeView(lvGcode, grblQueue, tbGCodeMessage, TransmissionProgress, GrblBufferLevel)
+        gcodeview = New GrblGcodeView(lvGcode, grblQueue, tbGCodeMessage, TransmissionProgress, GrblBufferLevel, lblAlarmDescription)
         offsets = New GrblOffsets(Me)
         state = New GrblState(Me)
+    End Sub
 
+    Private Sub grblgui_Shown(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Shown
         rescanPorts()
         If My.Settings.Port <> "" Then
             cbPorts.SelectedIndex = cbPorts.FindStringExact(My.Settings.Port)
@@ -69,7 +75,6 @@ Public Class GrblGui
             ' auto connect
             btnConnDisconnect_Click(btnConnect, Nothing)
         End If
-
     End Sub
 
     Private Sub grblgui_unload() Handles MyBase.FormClosing
@@ -247,14 +252,16 @@ Public Class GrblGui
 
     Private Sub btnSend_Click(sender As Object, e As EventArgs) Handles btnSend.Click
         ' Send a line to Grbl
-        gcode.sendGCodeLine(tbSendData.Text)
+        'gcode.sendGCodeLine(tbSendData.Text)
+        grblQueue.ExecuteImmediateCommand(tbSendData.Text)
     End Sub
 
     Private Sub tbSendData_KeyDown(sender As Object, e As KeyEventArgs) Handles tbSendData.KeyDown
         ' Do same as clicking Send button
         If e.KeyCode = Keys.Return Then
             ' Send a line to Grbl
-            gcode.sendGCodeLine(tbSendData.Text)
+            'gcode.sendGCodeLine(tbSendData.Text)
+            grblQueue.ExecuteImmediateCommand(tbSendData.Text)
         End If
     End Sub
 

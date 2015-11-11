@@ -65,19 +65,19 @@ Partial Class GrblGui
         Dim btn As RepeatButton.RepeatButton = sender
         Select Case btn.Tag
             Case "X+"
-                gcode.sendGCodeLine(createJogCommand("X"))
+                grblQueue.ExecuteImmediateCommand(createJogCommand("X"))
             Case "X-"
-                gcode.sendGCodeLine(createJogCommand("X-"))
+                grblQueue.ExecuteImmediateCommand(createJogCommand("X-"))
             Case "Y+"
-                gcode.sendGCodeLine(createJogCommand("Y"))
+                grblQueue.ExecuteImmediateCommand(createJogCommand("Y"))
             Case "Y-"
-                gcode.sendGCodeLine(createJogCommand("Y-"))
+                grblQueue.ExecuteImmediateCommand(createJogCommand("Y-"))
             Case "Z+"
-                gcode.sendGCodeLine(createJogCommand("Z"))
+                grblQueue.ExecuteImmediateCommand(createJogCommand("Z"))
             Case "Z-"
-                gcode.sendGCodeLine(createJogCommand("Z-"))
+                grblQueue.ExecuteImmediateCommand(createJogCommand("Z-"))
         End Select
-        gcode.sendGCodeLine("G90")
+        grblQueue.ExecuteImmediateCommand("G90")
     End Sub
 
     Private Sub btnJogArray_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
@@ -88,26 +88,26 @@ Partial Class GrblGui
             If cbSettingsKeyboardJogging.Checked Then
                 Select Case e.KeyCode
                     Case Keys.Left
-                        gcode.sendGCodeLine(createJogCommand("X-"))
+                        grblQueue.ExecuteImmediateCommand(createJogCommand("X-"))
                         e.Handled = True
                     Case Keys.Right
-                        gcode.sendGCodeLine(createJogCommand("X"))
+                        grblQueue.ExecuteImmediateCommand(createJogCommand("X"))
                         e.Handled = True
                     Case Keys.Up
-                        gcode.sendGCodeLine(createJogCommand("Y"))
+                        grblQueue.ExecuteImmediateCommand(createJogCommand("Y"))
                         e.Handled = True
                     Case Keys.Down
-                        gcode.sendGCodeLine(createJogCommand("Y-"))
+                        grblQueue.ExecuteImmediateCommand(createJogCommand("Y-"))
                         e.Handled = True
                     Case Keys.PageUp
-                        gcode.sendGCodeLine(createJogCommand("Z"))
+                        grblQueue.ExecuteImmediateCommand(createJogCommand("Z"))
                         e.Handled = True
                     Case Keys.PageDown
-                        gcode.sendGCodeLine(createJogCommand("Z-"))
+                        grblQueue.ExecuteImmediateCommand(createJogCommand("Z-"))
                         e.Handled = True
                 End Select
                 If e.Handled Then
-                    gcode.sendGCodeLine("G90")
+                    grblQueue.ExecuteImmediateCommand("G90")
                 End If
             End If
         End If

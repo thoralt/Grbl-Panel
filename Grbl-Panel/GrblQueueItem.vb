@@ -21,6 +21,7 @@
         ''' Grbl has acknowledged this item because the corresponding command has been executed.
         ''' </summary>
         acknowledged
+
     End Enum
 #End Region
 
@@ -55,7 +56,7 @@
             Dim oldState As ItemState = _state
             _state = newState ' modify before kicking off notification so the internal state change is not delayed
             If newState <> oldState Then
-                _parent.queueItemChangedState(Me, oldState, newState)
+                _parent._queueItemChangedState(Me, oldState, newState)
             End If
         End Set
     End Property
@@ -92,22 +93,41 @@
     ''' <returns></returns>
     Public Property ErrorFlag As Boolean
 
+    ''' <summary>
+    ''' Execution priority (0 = lowest)
+    ''' </summary>
+    ''' <returns></returns>
+    Public Property Priority As Integer
+
+    ''' <summary>
+    ''' Index reflecting the transmission order
+    ''' </summary>
+    ''' <returns></returns>
+    Public Property Order As Integer
+
 #End Region
 
-#Region "Constructor"
+#Region "Public methods"
     ''' <summary>
     ''' Creates a new instance of GrblQueueItem
     ''' </summary>
     ''' <param name="pText">Content (command)</param>
     ''' <param name="pState">usually ItemState.waiting</param>
     ''' <param name="pIndex">position in the queue</param>
-    Public Sub New(pText As String, pState As ItemState, pIndex As Integer, pParent As GrblQueue)
+    Public Sub New(pText As String, pState As ItemState, pIndex As Integer, pParent As GrblQueue, Optional pPriority As Integer = 0)
         _parent = pParent
         Text = pText
         Index = pIndex
-        State = pState
         ErrorFlag = False
+        Order = -1
+        Priority = pPriority
+
+        State = pState ' set state last because it triggers Events which might rely on other properties already populated
     End Sub
+
+    Public Function Description() As String
+        Return "text='" & Me.Text & "', index=" & Me.Index & ", order=" & Me.Order & ", state=" & Me.State & ", error flag=" & Me.ErrorFlag & ", priority=" & Me.Priority
+    End Function
 #End Region
 
 End Class

@@ -126,8 +126,8 @@ Partial Class GrblGui
                     End If
 
                     ' probing was successful, set new location and pull off
-                    grblQueue.enqueue("G90G10L20P0" + _ProbeAxis + centerCorrection.ToString())
-                    grblQueue.enqueue("G0" + _ProbeAxis + pullOffDistance.ToString())
+                    grblQueue.ExecuteImmediateCommand("G90G10L20P0" + _ProbeAxis + centerCorrection.ToString())
+                    grblQueue.ExecuteImmediateCommand("G0" + _ProbeAxis + pullOffDistance.ToString())
                 Else
                     ' probing failed
                 End If
@@ -140,15 +140,15 @@ Partial Class GrblGui
         Select Case b.Tag
             Case "HomeCycle"
                 ' Send Home command string
-                gcode.sendGCodeLine("$H")
+                grblQueue.ExecuteImmediateCommand("$H")
                 btnHome.BackColor = Color.Transparent       ' In case it was crimson for inital connect
                 tabCtlPosition.SelectedTab = tpWork         ' And show them the Work tab
             Case "Spcl Posn1"
-                gcode.sendGCodeLine(tbSettingsSpclPosition1.Text)
+                grblQueue.ExecuteImmediateCommand(tbSettingsSpclPosition1.Text)
             Case "Spcl Posn2"
-                gcode.sendGCodeLine(tbSettingsSpclPosition2.Text)
+                grblQueue.ExecuteImmediateCommand(tbSettingsSpclPosition2.Text)
             Case "ZeroXYZ"
-                gcode.sendGCodeLine(tbSettingsZeroXYZCmd.Text)
+                grblQueue.ExecuteImmediateCommand(tbSettingsZeroXYZCmd.Text)
         End Select
 
     End Sub
@@ -179,10 +179,10 @@ Partial Class GrblGui
         ' since directly after probing a G10 is issued, the normally discouraged
         ' use of G92 together with probing is acceptable
         ' grblQueue.enqueue("G90G10L20P0" + _ProbeAxis + "0")
-        grblQueue.enqueue("G90G92" + _ProbeAxis + "0")
+        grblQueue.ExecuteImmediateCommand("G90G92" + _ProbeAxis + "0")
 
         ' start probe cycle
-        grblQueue.enqueue("G38.2" + _ProbeAxis + _ProbeDirection + My.Settings.ProbeDistance + "F" + My.Settings.ProbeFeed)
+        grblQueue.ExecuteImmediateCommand("G38.2" + _ProbeAxis + _ProbeDirection + My.Settings.ProbeDistance + "F" + My.Settings.ProbeFeed)
 
         ' probing ends when GRBL responds with a line starting with "[PRB:"
 
@@ -193,11 +193,11 @@ Partial Class GrblGui
         Dim btn As Button = sender
         Select Case btn.Tag
             Case "X"
-                gcode.sendGCodeLine(My.Settings.WorkX0Cmd)
+                grblQueue.ExecuteImmediateCommand(My.Settings.WorkX0Cmd)
             Case "Y"
-                gcode.sendGCodeLine(My.Settings.WorkY0Cmd)
+                grblQueue.ExecuteImmediateCommand(My.Settings.WorkY0Cmd)
             Case "Z"
-                gcode.sendGCodeLine(My.Settings.WorkZ0Cmd)
+                grblQueue.ExecuteImmediateCommand(My.Settings.WorkZ0Cmd)
             Case "PX+"
                 probeAxis("X+")
             Case "PX-"

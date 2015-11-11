@@ -1,4 +1,6 @@
-﻿Partial Class GrblGui
+﻿Imports System.Timers
+
+Partial Class GrblGui
     Public Class GrblState
 
         ' A class to track and display Gcode state
@@ -8,12 +10,15 @@
         ' Gets fed the response to $G (Parser state)
         ' TODO Use List instead of Array()
         Private _gui As GrblGui
+        Private _queue As GrblQueue
 
         Public Sub New(ByRef gui As GrblGui)
             ' Get ref to parent object
             _gui = gui
+            _queue = gui.grblQueue
+
             ' For Connected events
-            AddHandler (GrblGui.Connected), AddressOf GrblConnected
+            AddHandler(GrblGui.Connected), AddressOf GrblConnected
 
         End Sub
         Public Sub EnableState(ByVal yes As Boolean)
@@ -25,11 +30,27 @@
             End If
         End Sub
 
-        Private Sub GrblConnected(ByVal msg As String)     ' Handles GrblGui.Connected Event
-            If msg = "Connected" Then
+        ''' <summary>
+        ''' Is called 1250 ms after opening the connection, sends "$G" to grbl
+        ''' to request the current configuration.
+        ''' </summary>
+        ''' <param name="sender"></param>
+        ''' <param name="e"></param>
+        Private Sub requestState(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+            _timer.Stop()
+            _queue.ExecuteImmediateCommand("$G")
+        End Sub
 
-                ' We are connected to Grbl so populate the State
-                gcode.sendGCodeLine("$G")
+        Shared _timer As System.Timers.Timer
+        Private Sub GrblConnected(ByVal msg As String)     ' Handles GrblGui.Connected Event
+
+            If msg = "Connected" Then
+                ' We are now connected so ask for Offset data
+                ' wait 1250 ms before issuing the command (on some systems the
+                ' request gets lost if sending "$G" directly after opening the connection)
+                _timer = New System.Timers.Timer(1250)
+                AddHandler _timer.Elapsed, New ElapsedEventHandler(AddressOf requestState)
+                _timer.Enabled = True
             End If
         End Sub
 
@@ -136,7 +157,7 @@
         Dim code As String = cbx.SelectedItem
         If code <> "" Then
             code = code.Substring(code.Length - 3, 3)
-            gcode.sendGCodeLine(code)
+            grblQueue.ExecuteImmediateCommand(code)
         End If
     End Sub
 End Class

@@ -69,12 +69,6 @@ Partial Class GrblGui
         Me.btnSend = New System.Windows.Forms.Button()
         Me.tbSendData = New System.Windows.Forms.TextBox()
         Me.gbJogging = New System.Windows.Forms.GroupBox()
-        Me.btnZMinus = New RepeatButton.RepeatButton()
-        Me.btnZPlus = New RepeatButton.RepeatButton()
-        Me.btnXPlus = New RepeatButton.RepeatButton()
-        Me.btnYMinus = New RepeatButton.RepeatButton()
-        Me.btnXMinus = New RepeatButton.RepeatButton()
-        Me.btnYPlus = New RepeatButton.RepeatButton()
         Me.gbFeedRate = New System.Windows.Forms.GroupBox()
         Me.rbFeedRate2 = New System.Windows.Forms.RadioButton()
         Me.rbFeedRate1 = New System.Windows.Forms.RadioButton()
@@ -284,6 +278,13 @@ Partial Class GrblGui
         Me.sfdOffsets = New System.Windows.Forms.SaveFileDialog()
         Me.ofdOffsets = New System.Windows.Forms.OpenFileDialog()
         Me.GrblSettingsBindingSource = New System.Windows.Forms.BindingSource(Me.components)
+        Me.btnZMinus = New RepeatButton.RepeatButton()
+        Me.btnZPlus = New RepeatButton.RepeatButton()
+        Me.btnXPlus = New RepeatButton.RepeatButton()
+        Me.btnYMinus = New RepeatButton.RepeatButton()
+        Me.btnXMinus = New RepeatButton.RepeatButton()
+        Me.btnYPlus = New RepeatButton.RepeatButton()
+        Me.lblAlarmDescription = New System.Windows.Forms.Label()
         Me.MenuStrip1.SuspendLayout()
         Me.TabControl1.SuspendLayout()
         Me.tabPgInterface.SuspendLayout()
@@ -786,79 +787,6 @@ Partial Class GrblGui
         Me.gbJogging.TabStop = False
         Me.gbJogging.Text = "Jogging"
         '
-        'btnZMinus
-        '
-        Me.btnZMinus.Font = New System.Drawing.Font("Microsoft Sans Serif", 27.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnZMinus.Interval = 100
-        Me.btnZMinus.Location = New System.Drawing.Point(399, 145)
-        Me.btnZMinus.Name = "btnZMinus"
-        Me.btnZMinus.Size = New System.Drawing.Size(80, 58)
-        Me.btnZMinus.TabIndex = 23
-        Me.btnZMinus.Tag = "Z-"
-        Me.btnZMinus.Text = "Z-"
-        Me.btnZMinus.UseVisualStyleBackColor = True
-        '
-        'btnZPlus
-        '
-        Me.btnZPlus.Font = New System.Drawing.Font("Microsoft Sans Serif", 27.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnZPlus.Interval = 100
-        Me.btnZPlus.Location = New System.Drawing.Point(399, 18)
-        Me.btnZPlus.Name = "btnZPlus"
-        Me.btnZPlus.Size = New System.Drawing.Size(80, 58)
-        Me.btnZPlus.TabIndex = 22
-        Me.btnZPlus.Tag = "Z+"
-        Me.btnZPlus.Text = "Z+"
-        Me.btnZPlus.UseVisualStyleBackColor = True
-        '
-        'btnXPlus
-        '
-        Me.btnXPlus.Font = New System.Drawing.Font("Microsoft Sans Serif", 27.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnXPlus.Interval = 100
-        Me.btnXPlus.Location = New System.Drawing.Point(299, 81)
-        Me.btnXPlus.Name = "btnXPlus"
-        Me.btnXPlus.Size = New System.Drawing.Size(80, 58)
-        Me.btnXPlus.TabIndex = 21
-        Me.btnXPlus.Tag = "X+"
-        Me.btnXPlus.Text = "X+"
-        Me.btnXPlus.UseVisualStyleBackColor = True
-        '
-        'btnYMinus
-        '
-        Me.btnYMinus.Font = New System.Drawing.Font("Microsoft Sans Serif", 27.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnYMinus.Interval = 100
-        Me.btnYMinus.Location = New System.Drawing.Point(233, 144)
-        Me.btnYMinus.Name = "btnYMinus"
-        Me.btnYMinus.Size = New System.Drawing.Size(80, 58)
-        Me.btnYMinus.TabIndex = 20
-        Me.btnYMinus.Tag = "Y-"
-        Me.btnYMinus.Text = "Y-"
-        Me.btnYMinus.TextAlign = System.Drawing.ContentAlignment.TopCenter
-        Me.btnYMinus.UseVisualStyleBackColor = True
-        '
-        'btnXMinus
-        '
-        Me.btnXMinus.Font = New System.Drawing.Font("Microsoft Sans Serif", 27.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnXMinus.Interval = 100
-        Me.btnXMinus.Location = New System.Drawing.Point(185, 81)
-        Me.btnXMinus.Name = "btnXMinus"
-        Me.btnXMinus.Size = New System.Drawing.Size(80, 58)
-        Me.btnXMinus.TabIndex = 19
-        Me.btnXMinus.Tag = "X-"
-        Me.btnXMinus.Text = "X-"
-        Me.btnXMinus.UseVisualStyleBackColor = True
-        '
-        'btnYPlus
-        '
-        Me.btnYPlus.Font = New System.Drawing.Font("Microsoft Sans Serif", 27.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnYPlus.Interval = 100
-        Me.btnYPlus.Location = New System.Drawing.Point(233, 18)
-        Me.btnYPlus.Name = "btnYPlus"
-        Me.btnYPlus.Size = New System.Drawing.Size(80, 58)
-        Me.btnYPlus.TabIndex = 18
-        Me.btnYPlus.Tag = "Y+"
-        Me.btnYPlus.Text = "Y+"
-        Me.btnYPlus.UseVisualStyleBackColor = True
-        '
         'gbFeedRate
         '
         Me.gbFeedRate.Controls.Add(Me.rbFeedRate2)
@@ -989,6 +917,7 @@ Partial Class GrblGui
         '
         Me.gbStatus.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.gbStatus.Controls.Add(Me.lblAlarmDescription)
         Me.gbStatus.Controls.Add(Me.Label25)
         Me.gbStatus.Controls.Add(Me.tbCurrentStatus)
         Me.gbStatus.Controls.Add(Me.Label24)
@@ -3103,6 +3032,92 @@ Partial Class GrblGui
         Me.ofdOffsets.FileName = "OpenFileDialog1"
         Me.ofdOffsets.Filter = "WorkOffset Files|*.xml"
         '
+        'btnZMinus
+        '
+        Me.btnZMinus.Font = New System.Drawing.Font("Microsoft Sans Serif", 27.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnZMinus.Interval = 100
+        Me.btnZMinus.Location = New System.Drawing.Point(399, 145)
+        Me.btnZMinus.Name = "btnZMinus"
+        Me.btnZMinus.Size = New System.Drawing.Size(80, 58)
+        Me.btnZMinus.TabIndex = 23
+        Me.btnZMinus.Tag = "Z-"
+        Me.btnZMinus.Text = "Z-"
+        Me.btnZMinus.UseVisualStyleBackColor = True
+        '
+        'btnZPlus
+        '
+        Me.btnZPlus.Font = New System.Drawing.Font("Microsoft Sans Serif", 27.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnZPlus.Interval = 100
+        Me.btnZPlus.Location = New System.Drawing.Point(399, 18)
+        Me.btnZPlus.Name = "btnZPlus"
+        Me.btnZPlus.Size = New System.Drawing.Size(80, 58)
+        Me.btnZPlus.TabIndex = 22
+        Me.btnZPlus.Tag = "Z+"
+        Me.btnZPlus.Text = "Z+"
+        Me.btnZPlus.UseVisualStyleBackColor = True
+        '
+        'btnXPlus
+        '
+        Me.btnXPlus.Font = New System.Drawing.Font("Microsoft Sans Serif", 27.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnXPlus.Interval = 100
+        Me.btnXPlus.Location = New System.Drawing.Point(299, 81)
+        Me.btnXPlus.Name = "btnXPlus"
+        Me.btnXPlus.Size = New System.Drawing.Size(80, 58)
+        Me.btnXPlus.TabIndex = 21
+        Me.btnXPlus.Tag = "X+"
+        Me.btnXPlus.Text = "X+"
+        Me.btnXPlus.UseVisualStyleBackColor = True
+        '
+        'btnYMinus
+        '
+        Me.btnYMinus.Font = New System.Drawing.Font("Microsoft Sans Serif", 27.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnYMinus.Interval = 100
+        Me.btnYMinus.Location = New System.Drawing.Point(233, 144)
+        Me.btnYMinus.Name = "btnYMinus"
+        Me.btnYMinus.Size = New System.Drawing.Size(80, 58)
+        Me.btnYMinus.TabIndex = 20
+        Me.btnYMinus.Tag = "Y-"
+        Me.btnYMinus.Text = "Y-"
+        Me.btnYMinus.TextAlign = System.Drawing.ContentAlignment.TopCenter
+        Me.btnYMinus.UseVisualStyleBackColor = True
+        '
+        'btnXMinus
+        '
+        Me.btnXMinus.Font = New System.Drawing.Font("Microsoft Sans Serif", 27.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnXMinus.Interval = 100
+        Me.btnXMinus.Location = New System.Drawing.Point(185, 81)
+        Me.btnXMinus.Name = "btnXMinus"
+        Me.btnXMinus.Size = New System.Drawing.Size(80, 58)
+        Me.btnXMinus.TabIndex = 19
+        Me.btnXMinus.Tag = "X-"
+        Me.btnXMinus.Text = "X-"
+        Me.btnXMinus.UseVisualStyleBackColor = True
+        '
+        'btnYPlus
+        '
+        Me.btnYPlus.Font = New System.Drawing.Font("Microsoft Sans Serif", 27.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnYPlus.Interval = 100
+        Me.btnYPlus.Location = New System.Drawing.Point(233, 18)
+        Me.btnYPlus.Name = "btnYPlus"
+        Me.btnYPlus.Size = New System.Drawing.Size(80, 58)
+        Me.btnYPlus.TabIndex = 18
+        Me.btnYPlus.Tag = "Y+"
+        Me.btnYPlus.Text = "Y+"
+        Me.btnYPlus.UseVisualStyleBackColor = True
+        '
+        'lblAlarmDescription
+        '
+        Me.lblAlarmDescription.BackColor = System.Drawing.Color.Red
+        Me.lblAlarmDescription.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblAlarmDescription.ForeColor = System.Drawing.Color.White
+        Me.lblAlarmDescription.Location = New System.Drawing.Point(161, 15)
+        Me.lblAlarmDescription.Name = "lblAlarmDescription"
+        Me.lblAlarmDescription.Size = New System.Drawing.Size(233, 26)
+        Me.lblAlarmDescription.TabIndex = 35
+        Me.lblAlarmDescription.Text = "ALARM DESCRIPTION"
+        Me.lblAlarmDescription.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.lblAlarmDescription.Visible = False
+        '
         'GrblGui
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -3439,4 +3454,5 @@ Partial Class GrblGui
     Friend WithEvents tbProbeToolDiameter As TextBox
     Friend WithEvents TransmissionProgress As ProgressBar
     Friend WithEvents GrblBufferLevel As ProgressBar
+    Friend WithEvents lblAlarmDescription As Label
 End Class

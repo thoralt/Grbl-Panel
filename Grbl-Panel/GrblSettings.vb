@@ -8,6 +8,7 @@ Partial Class GrblGui
 
 
         Private _gui As GrblGui
+        Private _queue As GrblQueue
         Private _paramTable As DataTable    ' to hold the parameters
         Private _nextParam As Integer       ' to track which param line is next
 
@@ -27,6 +28,8 @@ Partial Class GrblGui
         Public Sub New(ByRef gui As GrblGui)
             ' Get ref to parent object
             _gui = gui
+            _queue = gui.grblQueue
+
             ' For Connected events
             AddHandler (_gui.Connected), AddressOf GrblConnected
 
@@ -47,9 +50,9 @@ Partial Class GrblGui
         ''' <param name="sender"></param>
         ''' <param name="e"></param>
         Private Sub requestConfiguration(ByVal sender As Object, ByVal e As ElapsedEventArgs)
-            _nextParam = 0
-            gcode.sendGCodeLine("$$")
             _timer.Stop()
+            _nextParam = 0
+            _queue.ExecuteImmediateCommand("$$")
         End Sub
 
         Shared _timer As System.Timers.Timer
@@ -147,7 +150,7 @@ Partial Class GrblGui
 
     Private Sub btnSettingsGrbl_Click(sender As Object, e As EventArgs) Handles btnSettingsGrbl.Click
         ' Retrieve settings from Grbl
-        gcode.sendGCodeLine("$$")
+        grblQueue.ExecuteImmediateCommand("$$")
     End Sub
 
 
@@ -164,9 +167,9 @@ Partial Class GrblGui
         If Not IsNothing(gridView.EditingControl) Then
             ' we have something to change (aka ignore errant double clicks)
             Dim param As String = gridView.Rows(e.RowIndex).Cells(0).Value + "=" + gridView.EditingControl.Text
-            gcode.sendGCodeLine(param)
+            grblQueue.ExecuteImmediateCommand(param)
             Sleep(200)              ' Have to wait for EEProm write
-            gcode.sendGCodeLine("$$")   ' Refresh
+            grblQueue.ExecuteImmediateCommand("$$")   ' Refresh
         End If
     End Sub
 End Class

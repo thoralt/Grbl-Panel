@@ -9,6 +9,7 @@ Partial Class GrblGui
         '   - Handles the sending to Grbl using either the simple or advanced protocols
         '   - Handles introducing canned cycles (M06, G81/2/3)
         Private _gui As GrblGui
+        Private _queue As GrblQueue
         Private _wtgForAck As Boolean = False         '
         Private _runMode As Boolean = True            '
         Private _sendAnotherLine As Boolean = False   '
@@ -22,6 +23,7 @@ Partial Class GrblGui
 
         Public Sub New(ByRef gui As GrblGui)
             _gui = gui
+            _queue = gui.grblQueue
         End Sub
 
         Public Sub enableGCode(ByVal action As Boolean)
@@ -50,12 +52,14 @@ Partial Class GrblGui
             Do While Not _inputfh.EndOfStream
                 data = _inputfh.ReadLine()    ' Issue #20, ignore '%'
                 If data <> "%" Then
-                    _gui.gcodeview.Insert(data, _inputcount)
+                    _queue.Enqueue(data, False, _inputcount)
+                    '_gui.gcodeview.Insert(data, _inputcount)
                     _inputcount += 1
                 End If
             Loop
 
             lineCount = _inputcount
+            _gui.lvGcode.EnsureVisible(0)           ' show top of file for user to verify etc
 
             If Not IsNothing(_inputfh) Then
                 _inputfh.Close()
@@ -99,28 +103,31 @@ Partial Class GrblGui
             _gui.gcodeview.fileMode = True
 
             '_gui.processLineEvent("")              ' Prime the pump
-            _gui.grblQueue.resumeSending()
+            _queue.ResumeSending()
 
 
         End Sub
 
-        Public Sub sendGCodeLine(ByVal data As String)
-            ' Send a line immediately
-            ' This can only happen when not sending a file, buttons are interlocked
-            _runMode = False
-            _gui.gcodeview.fileMode = False
+        Public Sub _removed_sendGCodeLine(ByVal data As String)
 
-            If Not (data.StartsWith("$") Or data.StartsWith("?")) Then
-                ' add to display
-                _gui.gcodeview.Insert(data, 0)
-                gcode.lineCount += 1        ' TODO is this necessary?
-                ' we are always be the last item in manual mode
-                _gui.gcodeview.UpdateGcodeSent(-1)
-                ' Expect a response from Grbl
-                wtgForAck = True
-            End If
-            _gui.state.ProcessGCode(data)            ' Keep Gcode State object in the loop
-            _gui.grblPort.sendData(data)
+            _queue.ExecuteImmediateCommand(data)
+
+            '' Send a line immediately
+            '' This can only happen when not sending a file, buttons are interlocked
+            '_runMode = False
+            '_gui.gcodeview.fileMode = False
+
+            'If Not (data.StartsWith("$") Or data.StartsWith("?")) Then
+            '    ' add to display
+            '    _gui.gcodeview.Insert(data, 0)
+            '    gcode.lineCount += 1        ' TODO is this necessary?
+            '    ' we are always be the last item in manual mode
+            '    _gui.gcodeview.UpdateGcodeSent(-1)
+            '    ' Expect a response from Grbl
+            '    wtgForAck = True
+            'End If
+            '_gui.state.ProcessGCode(data)            ' Keep Gcode State object in the loop
+            '_gui.grblPort.sendData(data)
 
         End Sub
 
@@ -128,7 +135,7 @@ Partial Class GrblGui
             ' Pause the file send
             _sendAnotherLine = False
             _runMode = False
-            _gui.grblQueue.pauseSending()
+            _queue.Pause()
         End Sub
 
         Public Sub sendGCodeFileResume()
@@ -137,7 +144,7 @@ Partial Class GrblGui
             _runMode = True
             _gui.gcodeview.fileMode = True
             _gui.processLineEvent("")              ' Prime the pump again
-            _gui.grblQueue.resumeSending()
+            _queue.ResumeSending()
         End Sub
         Public Sub sendGCodeFileStop()
 
@@ -228,7 +235,7 @@ Partial Class GrblGui
     End Class
 
     Public Class GrblGcodeView
-        ' A class to manage the Gcode list view
+        ' A class to manage the Gcode list view and GrblQueue events
         ' This contains the GCode queue going to Grbl
         ' GrblGui owns the lvGcode control but this class manages its content
 
@@ -236,27 +243,18 @@ Partial Class GrblGui
         Private _message As TextBox
         Private _progress As ProgressBar
         Private _bufferLevel As ProgressBar
+        Private _alarmDescription As Label
         Private WithEvents _queue As GrblQueue
         Private _filemode As Boolean = False ' True if in File Send mode
         Private _pausedItem As Integer = -1
 
-        Property ignoreScreenUpdate As Boolean
-            Get
-                Return _ignoreScreenUpdate
-            End Get
-            Set(value As Boolean)
-                _ignoreScreenUpdate = value
-                If value = False Then _lview.Update()
-            End Set
-        End Property
-        Private _ignoreScreenUpdate As Boolean = False
-
-        Public Sub New(ByRef view As ListView, ByRef queue As GrblQueue, ByRef message As TextBox, progress As ProgressBar, bufferLevel As ProgressBar)
+        Public Sub New(ByRef view As ListView, ByRef queue As GrblQueue, ByRef message As TextBox, progress As ProgressBar, bufferLevel As ProgressBar, alarmDescription As Label)
             _lview = view
             _queue = queue
             _message = message
             _progress = progress
             _bufferLevel = bufferLevel
+            _alarmDescription = alarmDescription
         End Sub
 
         ''' <summary>
@@ -273,8 +271,32 @@ Partial Class GrblGui
 
 #Region "GrblQueue Events"
 
+        Public Delegate Sub QueueAlarm_Delegate(description As String)
+        Private Sub QueueAlarm(description As String) Handles _queue.QueueAlarm
+            If _alarmDescription.InvokeRequired Then
+                ' we need to cross thread this callback
+                Dim _delegate As New QueueAlarm_Delegate(AddressOf QueueAlarm)
+                _alarmDescription.BeginInvoke(_delegate, New Object() {description})
+            Else
+                _alarmDescription.Text = description
+                _alarmDescription.Visible = True
+            End If
+        End Sub
+
+        Public Delegate Sub QueueResetAlarm_Delegate()
+        Private Sub QueueResetAlarm() Handles _queue.QueueResetAlarm
+            If _alarmDescription.InvokeRequired Then
+                ' we need to cross thread this callback
+                Dim _delegate As New QueueResetAlarm_Delegate(AddressOf QueueResetAlarm)
+                _alarmDescription.BeginInvoke(_delegate)
+            Else
+                ' reset alarm display
+                _alarmDescription.Visible = False
+            End If
+        End Sub
+
         ''' <summary>
-        ''' Gets called whenever the queue finds a gcode comment "(... comment text ...)",
+        ''' Reports grbl's buffer level in %
         ''' sets the content of text box tbGCodeMessage
         ''' the last queued command.
         ''' </summary>
@@ -290,8 +312,27 @@ Partial Class GrblGui
         End Sub
 
         ''' <summary>
-        ''' Gets called whenever the queue finds a gcode comment "(... comment text ...)",
-        ''' sets the content of text box tbGCodeMessage
+        ''' Gets called whenever an item has been added to the queue
+        ''' -> display the item in the GUI
+        ''' the last queued command.
+        ''' </summary>
+        Public Delegate Sub QueueAddedItem_Delegate(item As GrblQueueItem)
+        Private Sub QueueAddedItem(item As GrblQueueItem) Handles _queue.QueueAddedItem
+            If _lview.InvokeRequired Then
+                ' we need to cross thread this callback
+                Dim _delegate As New QueueAddedItem_Delegate(AddressOf QueueAddedItem)
+                _lview.BeginInvoke(_delegate, New Object() {item})
+            Else
+                Dim lvi As New ListViewItem
+                lvi.Text = ""                             ' This is for Status of command
+                lvi.SubItems.Add(item.Index.ToString())   ' file line number
+                lvi.SubItems.Add(item.Text)               ' This is the Gcode block
+                _lview.Items.Add(lvi)
+            End If
+        End Sub
+
+        ''' <summary>
+        ''' Reports queue progress in %, sets the progress bar in the GUI
         ''' the last queued command.
         ''' </summary>
         Public Delegate Sub QueueProgress_Delegate(progressValue As Integer)
@@ -399,11 +440,14 @@ Partial Class GrblGui
                 Dim _delegate As New QueueItemStatusChanged_Delegate(AddressOf QueueItemStatusChanged)
                 _lview.BeginInvoke(_delegate, New Object() {item, oldState, newState})
             Else
+                ' safety check
+                If item.Index < 0 OrElse item.Index >= _lview.Items.Count Then Return
+
                 If newState = GrblQueueItem.ItemState.waiting Then
                     ' an item has been added to our queue and is waiting to be sent to grbl
                     ' -> color it grey
                     _lview.Items(item.Index).BackColor = Color.LightGray
-                    If Not _ignoreScreenUpdate Then _lview.Update()
+                    _lview.Update()
                 End If
 
                 If newState = GrblQueueItem.ItemState.sent Then
@@ -415,7 +459,7 @@ Partial Class GrblGui
                     Dim index As Integer = item.Index + 2
                     If index >= _lview.Items.Count() Then index = _lview.Items.Count - 1
                     _lview.EnsureVisible(index) ' scroll to latest command in grbl's buffer
-                    If Not _ignoreScreenUpdate Then _lview.Update()
+                    _lview.Update()
                 End If
 
                 If newState = GrblQueueItem.ItemState.acknowledged Then
@@ -436,7 +480,7 @@ Partial Class GrblGui
                         _lview.Items(index).BackColor = Color.Orange
                         _lview.Items(index).SubItems(0).Text = "exec"
                     End If
-                    If Not _ignoreScreenUpdate Then _lview.Update()
+                    _lview.Update()
                 End If
             End If
         End Sub
@@ -444,15 +488,13 @@ Partial Class GrblGui
 
         Public Sub Insert(ByVal data As String, ByVal lineNumber As Integer)
             ' Insert a new item into the view
-            Dim lvi As New ListViewItem
-            lvi.Text = ""                       ' This is for Status of command
-            lvi.SubItems.Add(lineNumber.ToString)    ' file line number
-            lvi.SubItems.Add(data)              ' This is the Gcode block
-            _lview.Items.Add(lvi)
-            _queue.enqueue(data, False, lineNumber)
-
-            _lview.EnsureVisible(0)           ' show top of file for user to verify etc
-            '_lview.Update()
+            'Dim lvi As New ListViewItem
+            'lvi.Text = ""                       ' This is for Status of command
+            'lvi.SubItems.Add(lineNumber.ToString)    ' file line number
+            'lvi.SubItems.Add(data)              ' This is the Gcode block
+            '_lview.Items.Add(lvi)
+            '_lview.EnsureVisible(0)           ' show top of file for user to verify etc
+            ''_lview.Update()
         End Sub
 
         Public Sub UpdateGCodeStatus(ByVal stat As String, ByVal index As Integer)
@@ -591,7 +633,8 @@ Partial Class GrblGui
     Private Sub btnCheckMode_Click(sender As Object, e As EventArgs) Handles btnCheckMode.Click
         ' Enable/disable Check mode in Grbl
         ' Just send a $C, this toggles Check state in Grbl
-        grblPort.sendData("$C")
+        'grblPort.sendData("$C")
+        grblQueue.ExecuteImmediateCommand("$C")
     End Sub
 
     Private Sub btnFileGroup_Click(sender As Object, e As EventArgs) Handles btnFileSend.Click, btnFileSelect.Click, btnFilePause.Click, btnFileStop.Click, _

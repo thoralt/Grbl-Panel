@@ -70,6 +70,11 @@ Partial Class GrblGui
 
         ' We can't poll for Parser status until Grbl stops requiring a vbLF at end of $ commands
         ' This is because that results in an ok response, which messes up Gcode file send ack's!! :-(
+        ' -- This is still true after implementing GrblQueue, ACKs get messed up here as well!
+        ' -- TODO: Allow to throw in immediate commands into running queue, this is already possible
+        '          but forbidden in code. Since immediate commands are prioritized inside the queue
+        '          and every transmitted command gets an ascending transmit order ID which in turn
+        '          is used when receiving ACKs, this might work.
         Dim state As GrblStatus.timerInfo = DirectCast(stateInfo, GrblStatus.timerInfo)
         state.count += 1
         If state.count = 10 Then
@@ -84,7 +89,9 @@ Partial Class GrblGui
     'End Class
     Private Sub btnUnlock_Click(sender As Object, e As EventArgs) Handles btnUnlock.Click
         ' Send Unlock ($x) to Grbl
-        grblPort.sendData("$x")
+        ' grblPort.sendData("$x")
+        grblQueue.ExecuteImmediateCommand("$X")
+
         tabCtlPosition.SelectedTab = tpWork         ' refocus to Work tab
         btnHome.BackColor = Color.Transparent       ' Use decided not to Home Cycle, so clear hint
     End Sub
@@ -106,7 +113,8 @@ Partial Class GrblGui
 
     Private Sub btnStatusGetParser_Click(sender As Object, e As EventArgs) Handles btnStatusGetParser.Click
         ' Send request for Parser State, response handler picks it up and displays
-        grblPort.sendData("$G")
+        'grblPort.sendData("$G")
+        grblQueue.ExecuteImmediateCommand("$G")
     End Sub
 
     Public Sub showGrblStatus(ByVal data As String)
@@ -210,19 +218,36 @@ Partial Class GrblGui
         Select Case status
             Case "<Alarm", "ALARM:", "ALARM"
                 tbCurrentStatus.BackColor = Color.Red
+                tbCurrentStatus.ForeColor = Color.White
                 tbCurrentStatus.Text = "ALARM"
             Case "<Run"
                 tbCurrentStatus.BackColor = Color.LightGreen
+                tbCurrentStatus.ForeColor = Color.Black
                 tbCurrentStatus.Text = "RUN"
             Case "<Idle"
                 tbCurrentStatus.BackColor = Color.LightGreen
+                tbCurrentStatus.ForeColor = Color.Black
                 tbCurrentStatus.Text = "IDLE"
             Case "<Check"
                 tbCurrentStatus.BackColor = Color.YellowGreen
+                tbCurrentStatus.ForeColor = Color.Black
                 tbCurrentStatus.Text = "CHECK"
-            Case "<Queue"
+            Case "<Queue" ' TODO: Not in grbls current (v0.9) description. Remove?
                 tbCurrentStatus.BackColor = Color.YellowGreen
+                tbCurrentStatus.ForeColor = Color.Black
                 tbCurrentStatus.Text = "QUEUE"
+            Case "<Hold"
+                tbCurrentStatus.BackColor = Color.Yellow
+                tbCurrentStatus.ForeColor = Color.Black
+                tbCurrentStatus.Text = "HOLD"
+            Case "<Door"
+                tbCurrentStatus.BackColor = Color.Orange
+                tbCurrentStatus.ForeColor = Color.White
+                tbCurrentStatus.Text = "DOOR"
+            Case "<Home"
+                tbCurrentStatus.BackColor = Color.LightBlue
+                tbCurrentStatus.ForeColor = Color.Black
+                tbCurrentStatus.Text = "HOME"
         End Select
     End Sub
 
