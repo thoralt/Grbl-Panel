@@ -58,7 +58,6 @@ Partial Class GrblGui
         Shared _timer As System.Timers.Timer
         Private Sub GrblConnected(ByVal msg As String)     ' Handles GrblGui.Connected Event
             If msg = "Connected" Then
-
                 ' We are connected to Grbl so populate the Settings
                 ' wait 1000 ms before fetching the configuration (on some systems the
                 ' request gets lost if sending "$$" directly after opening the connection)

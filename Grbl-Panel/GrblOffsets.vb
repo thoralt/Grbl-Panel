@@ -134,13 +134,15 @@ Partial Class GrblGui
         End Sub
 
         Shared _timer As System.Timers.Timer
-        Private Sub GrblConnected()     ' Handles GrblGui.Connected Event
-            ' We are now connected so ask for Offset data
-            ' wait 1500 ms before issuing the command (on some systems the
-            ' request gets lost if sending "$#" directly after opening the connection)
-            _timer = New System.Timers.Timer(1500)
-            AddHandler _timer.Elapsed, New ElapsedEventHandler(AddressOf requestParameters)
-            _timer.Enabled = True
+        Private Sub GrblConnected(ByVal msg As String)     ' Handles GrblGui.Connected Event
+            If msg = "connected" Then
+                ' We are now connected so ask for Offset data
+                ' wait 1500 ms before issuing the command (on some systems the
+                ' request gets lost if sending "$#" directly after opening the connection)
+                _timer = New System.Timers.Timer(1500)
+                AddHandler _timer.Elapsed, New ElapsedEventHandler(AddressOf requestParameters)
+                _timer.Enabled = True
+            End If
         End Sub
     End Class
 

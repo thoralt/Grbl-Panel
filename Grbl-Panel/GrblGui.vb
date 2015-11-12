@@ -54,7 +54,7 @@ Public Class GrblGui
         jogging = New GrblJogging(Me)
         position = New GrblPosition(Me)
         gcode = New GrblGcode(Me)
-        gcodeview = New GrblGcodeView(lvGcode, grblQueue, tbGCodeMessage, TransmissionProgress, GrblBufferLevel, lblAlarmDescription)
+        gcodeview = New GrblGcodeView(Me)
         offsets = New GrblOffsets(Me)
         state = New GrblState(Me)
     End Sub
@@ -213,10 +213,11 @@ Public Class GrblGui
                 If connected = True Then
                     ' Wake up the subsystems
                     ' TODO Replace these calls with Event Connected handling in each object
+                    setSubPanels("Idle")
                     status.enableStatus(True)
                     jogging.enableJogging(True)
                     position.enablePosition(True)
-                    gcode.enableGCode(True)
+                    btnFileSelect.Enabled = True
                     offsets.enableOffsets(True)
                     state.EnableState(True)
                     settings.EnableState(True)
@@ -240,7 +241,7 @@ Public Class GrblGui
                 status.enableStatus(False)
                 jogging.enableJogging(False)
                 position.enablePosition(False)
-                gcode.enableGCode(False)
+                btnFileSelect.Enabled = False
                 offsets.enableOffsets(False)
                 state.EnableState(False)
                 settings.EnableState(False)

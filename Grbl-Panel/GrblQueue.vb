@@ -19,8 +19,6 @@
 
     Private _nextSendOrderLock As New Object()
     Private _nextSendOrder As Integer = 0
-    Private _lastAcknowledgedItemLock As New Object()
-    Private _lastAcknowledgedItem As Integer = 0
 
     Private _executeImmediateCommandLock As New Object()
     Private _pumpLock As New Object()
@@ -240,7 +238,7 @@
     ''' <summary>
     ''' Resumes transmission, raises QueueResuming event.
     ''' </summary>
-    Public Sub ResumeSending()
+    Public Sub [Resume]()
         If _pause Then
             _pause = False
             RaiseEvent QueueResuming(_firstWaitingItem())
@@ -249,6 +247,14 @@
             _receiveData("(!go)")
         End If
     End Sub
+
+    Public Function isRunning() As Boolean
+        Return Not _pause
+    End Function
+
+    Public Function numberOfLines() As Integer
+        Return _queue.Count
+    End Function
 #End Region
 
 #Region "Private methods"
@@ -333,49 +339,40 @@
     ''' </summary>
     Private Sub _acknowledgeNextItem(err As Boolean)
 
-        ' count the acknowledged items
-        SyncLock _lastAcknowledgedItemLock
-            _lastAcknowledgedItem += 1
-        End SyncLock
-
         ' find next item which has been sent based on transmission order field
         ' this ensures high priority orders to be acknowledged out of order
+        Dim itemToAcknowledge As GrblQueueItem = Nothing
+
         SyncLock _queue
             For Each item As GrblQueueItem In _queue
-                If item.Order = _lastAcknowledgedItem Then
-                    If item.State <> GrblQueueItem.ItemState.sent Then
-                        Throw New Exception("Trying to acknowledge an item which has not yet been sent: " & item.Description() & ".")
-                    End If
-
-                    ' acknowledge this item
-                    SyncLock item
-                        item.State = GrblQueueItem.ItemState.acknowledged
-                        item.ErrorFlag = err
-                    End SyncLock
-
-                    ' increase free buffer capacity
-                    SyncLock _bufferCapacityLock
-                        _bufferCapacity += item.Length
-                        If _bufferCapacity > _MAX_GRBL_QUEUE_SIZE Then _bufferCapacity = _MAX_GRBL_QUEUE_SIZE
-                    End SyncLock
-
-                    Console.WriteLine("GrblQueue: Acknowledging item " & item.Index & " '" & item.Text &
-                                      "', freeing " & item.Length & " bytes, now capacity=" & _bufferCapacity)
-                    RaiseEvent QueueProgress(100 * item.Index / _queue.Count)
-                    RaiseEvent QueueGrblBufferLevel(100 * (_MAX_GRBL_QUEUE_SIZE - _bufferCapacity) / _MAX_GRBL_QUEUE_SIZE)
-                    Return
+                If item.State = GrblQueueItem.ItemState.sent AndAlso (itemToAcknowledge Is Nothing OrElse item.Order < itemToAcknowledge.Order) Then
+                    itemToAcknowledge = item
                 End If
             Next
+
+            If itemToAcknowledge Is Nothing Then
+                Console.WriteLine("Trying to acknowledge next item but did not find any candidate.")
+                Return
+            End If
+
+            ' acknowledge this item
+            SyncLock itemToAcknowledge
+                itemToAcknowledge.State = GrblQueueItem.ItemState.acknowledged
+                itemToAcknowledge.ErrorFlag = err
+            End SyncLock
+
+            ' increase free buffer capacity
+            SyncLock _bufferCapacityLock
+                _bufferCapacity += itemToAcknowledge.Length
+                If _bufferCapacity > _MAX_GRBL_QUEUE_SIZE Then _bufferCapacity = _MAX_GRBL_QUEUE_SIZE
+            End SyncLock
+
+            Console.WriteLine("GrblQueue: Acknowledging item " & itemToAcknowledge.Description() & ", freeing " &
+                              itemToAcknowledge.Length & " bytes, now capacity=" & _bufferCapacity)
+
+            RaiseEvent QueueProgress(100 * itemToAcknowledge.Index / _queue.Count)
+            RaiseEvent QueueGrblBufferLevel(100 * (_MAX_GRBL_QUEUE_SIZE - _bufferCapacity) / _MAX_GRBL_QUEUE_SIZE)
         End SyncLock
-
-        ' Endlosschleife nach disconnect/connect
-
-        ' Throw New Exception("Trying to acknowledge an item which does not exist (order=" & _lastAcknowledgedItem & ").")
-        Console.WriteLine("Trying To acknowledge an item which does not exist (order=" & _lastAcknowledgedItem & ").")
-        SyncLock _lastAcknowledgedItemLock
-            _lastAcknowledgedItem -= 1
-        End SyncLock
-
     End Sub
 
     ''' <summary>
@@ -522,35 +519,12 @@
             ' this occurs directly when an alarm happens
 
             _acknowledgeNextItem(False)
-
-            If Not _pause Then
-                ' TODO: Add proper handling to stop queue
-            End If
-
-            ' report alarm to GUI
             _alarmState = True
+            _pause = True
+
+            ' report alarm to GUI (will disable/enable buttons and display alarm message)
             RaiseEvent QueueAlarm(data.Substring(7))
             RaiseEvent QueueProgress(0)
-
-            ' this occurs if 
-            ' alarm always stops sending
-
-            ' mark every item as acknowledged so it does
-            ' not get sent again when restarting
-
-            ' TODO: Add proper handling to stop queue
-            ' Alarm
-            'SyncLock _queue
-            '    For Each item As GrblQueueItem In _queue
-            '        item.State = GrblQueueItem.ItemState.acknowledged
-            '    Next
-            'End SyncLock
-            'SyncLock _bufferCapacityLock
-            '    _bufferCapacity = _MAX_GRBL_QUEUE_SIZE
-            'End SyncLock
-            '_drainQueueAndResume = False
-            _pause = True
-            'RaiseEvent QueueFinished()
 
         ElseIf data.StartsWith("<ALARM") Then
             ' this occurs if the periodical "get status" command ("?") shows a previous

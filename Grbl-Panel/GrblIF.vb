@@ -288,8 +288,10 @@ Public Class GrblIF
             Return
         End Try
 
-        'Console.WriteLine("port_DataReceived: " + data)
-        For Each callback In _recvDelegates
+        ' rarely getting exceptions because of list being modified while iterating
+        ' -> create copy of list before using it
+        Dim recvDelegatesCopy As New List(Of grblDataReceived)(_recvDelegates)
+        For Each callback In recvDelegatesCopy
             'Console.WriteLine("recvDelegates:")
             callback.Invoke(data)
         Next

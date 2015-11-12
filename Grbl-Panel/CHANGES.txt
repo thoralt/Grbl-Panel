@@ -1,4 +1,12 @@
 This file documents changes made:
+
+V1.1.0.0    - 2015 Nov 12
+            - added support for probing on all axes
+            - implemented queue for better buffer utilization in grbl
+			- added big red alarm label displaying the last alarm
+			- fixed exception when auto-opening port and port has changed
+			- added delay for initial $$, $# and $G commands on startup, they sometimes got lost
+			  resulting in grbl-panel not loading configuration when opening connection
 V1.0.3.0	- 2014 Dec 30
 			- Release file handle immediately after loading, Issue #19
 			- Ensure we always treat '.' as decimal, force Locale, Issue #17
