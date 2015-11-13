@@ -35,6 +35,12 @@
     Public Event QueueAlarm(AlarmText As String)
 
     ''' <summary>
+    ''' Grbl reports an error.
+    ''' </summary>
+    ''' <param name="ErrorText">Error description</param>
+    Public Event QueueError(ErrorText As String)
+
+    ''' <summary>
     ''' The alarm condition has been reset.
     ''' </summary>
     Public Event QueueResetAlarm()
@@ -367,8 +373,8 @@
                 If _bufferCapacity > _MAX_GRBL_QUEUE_SIZE Then _bufferCapacity = _MAX_GRBL_QUEUE_SIZE
             End SyncLock
 
-            Console.WriteLine("GrblQueue: Acknowledging item " & itemToAcknowledge.Description() & ", freeing " &
-                              itemToAcknowledge.Length & " bytes, now capacity=" & _bufferCapacity)
+            'Console.WriteLine("GrblQueue: Acknowledging item " & itemToAcknowledge.Description() & ", freeing " &
+            '                  itemToAcknowledge.Length & " bytes, now capacity=" & _bufferCapacity)
 
             RaiseEvent QueueProgress(100 * itemToAcknowledge.Index / _queue.Count)
             RaiseEvent QueueGrblBufferLevel(100 * (_MAX_GRBL_QUEUE_SIZE - _bufferCapacity) / _MAX_GRBL_QUEUE_SIZE)
@@ -451,7 +457,7 @@
                             RaiseEvent QueueComment(comment)
                         End If
 
-                        Console.WriteLine("GrblQueue: sending item " & item.Index & " '" & item.Text & "' " & item.Length & " bytes, capacity=" & _bufferCapacity)
+                        'Console.WriteLine("GrblQueue: sending item " & item.Index & " '" & item.Text & "' " & item.Length & " bytes, capacity=" & _bufferCapacity)
 
                         RaiseEvent QueueGrblBufferLevel(100 * (_MAX_GRBL_QUEUE_SIZE - _bufferCapacity) / _MAX_GRBL_QUEUE_SIZE)
 
@@ -472,7 +478,7 @@
                         ' next command to be sent does _not_ fit into buffer
                         ' -> stop here and try again later when more commands
                         ' have been acknowledged
-                        Console.WriteLine("GrblQueue: _pump() could not send '" & item.Text & "' " & item.Length & " bytes, buffer is full")
+                        'Console.WriteLine("GrblQueue: _pump() could not send '" & item.Text & "' " & item.Length & " bytes, buffer is full")
                         bufferIsFull = True
                     End If
                 End SyncLock
@@ -510,10 +516,7 @@
 
         ElseIf data.StartsWith("ERROR")
             _acknowledgeNextItem(True)
-
-            ' TODO: Pause on error?
-            'Me.pauseSending()
-            If Not _pause Then _pump()
+            RaiseEvent QueueError(data.Substring(7))
 
         ElseIf data.StartsWith("ALARM") Then
             ' this occurs directly when an alarm happens

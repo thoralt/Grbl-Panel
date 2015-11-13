@@ -163,11 +163,10 @@ Partial Class GrblGui
                 btnFileReload.Enabled = False
 
             Case "Stop"
-                grblQueue.Pause()
-                'tbGcodeFile.Text = ""
+                gcodeview.StopSending()
+
                 ' Re-enable manual control
                 setSubPanels("Idle")
-
                 btnFileSelect.Enabled = True
                 btnFileSend.Tag = "Send"
                 btnFileSend.Enabled = False
@@ -246,6 +245,49 @@ Partial Class GrblGui
             _pausedItem = -1
             _progress.Value = 0
         End Sub
+
+        ''' <summary>
+        ''' Stops the queue and marks the entry after the last one being sent as stopped in the UI
+        ''' </summary>
+        Public Sub StopSending()
+            _queue.Pause()
+
+            Dim stoppedItem As ListViewItem = Nothing
+
+            If _pausedItem > -1 And _pausedItem < _lview.Items.Count Then
+                ' if paused, mark paused entry in ListView as stopped
+                stoppedItem = _lview.Items(_pausedItem)
+            Else
+                ' check if there's an entry after the last buffered/last acknowledged item
+                Dim lastBufferedItemIndex As Integer = -1
+                Dim lastAcknowledgedItemIndex As Integer = -1
+                Dim index As Integer = -1
+                For Each item As ListViewItem In _lview.Items
+                    If item.SubItems(0).Text = "buff" Then
+                        lastBufferedItemIndex = item.Index
+                    ElseIf item.SubItems(0).Text = "OK" OrElse item.SubItems(0).Text = "err" Then
+                        lastAcknowledgedItemIndex = item.Index
+                    End If
+                Next
+
+                If lastBufferedItemIndex > lastAcknowledgedItemIndex Then
+                    index = lastBufferedItemIndex + 1
+                Else
+                    index = lastAcknowledgedItemIndex + 1
+                End If
+                If index >= 0 And index < _lview.Items.Count Then
+                    stoppedItem = _lview.Items(index)
+                End If
+            End If
+
+            ' mark as stopped
+            If stoppedItem IsNot Nothing Then
+                stoppedItem.BackColor = Color.Black
+                stoppedItem.ForeColor = Color.White
+                stoppedItem.SubItems(0).Text = "stop"
+            End If
+        End Sub
+
 #End Region
 
 #Region "GrblQueue event handlers"
@@ -261,10 +303,33 @@ Partial Class GrblGui
                 _alarmDescription.BeginInvoke(_delegate, New Object() {description})
             Else
                 _alarmDescription.Text = description
+                _alarmDescription.BackColor = Color.Red
+                _alarmDescription.ForeColor = Color.White
                 _alarmDescription.Visible = True
 
                 ' stop sending more commands to grbl
                 _gui.btnFileGroup_Click(_gui.btnFileStop, Nothing)
+            End If
+        End Sub
+
+        ''' <summary>
+        ''' Gets called when GrblQueue detects an error condition in grbl's output.
+        ''' Pauses the GUI and queue.
+        ''' </summary>
+        ''' <param name="description"></param>
+        Public Delegate Sub QueueError_Delegate(description As String)
+        Private Sub QueueError(description As String) Handles _queue.QueueError
+            If _alarmDescription.InvokeRequired Then
+                Dim _delegate As New QueueError_Delegate(AddressOf QueueError)
+                _alarmDescription.BeginInvoke(_delegate, New Object() {description})
+            Else
+                _alarmDescription.Text = description
+                _alarmDescription.BackColor = Color.Yellow
+                _alarmDescription.ForeColor = Color.Black
+                _alarmDescription.Visible = True
+
+                ' pause on error
+                _gui.btnFileGroup_Click(_gui.btnFilePause, Nothing)
             End If
         End Sub
 
@@ -444,7 +509,7 @@ Partial Class GrblGui
                 If newState = GrblQueueItem.ItemState.acknowledged Then
                     ' an item has been acknowledged by grbl which means the corresponding
                     ' command has been executed -> color it green
-                    Console.WriteLine("Ack " & item.Index & " " & item.Text)
+                    'Console.WriteLine("Ack " & item.Index & " " & item.Text)
                     If item.ErrorFlag Then
                         _lview.Items(item.Index).BackColor = Color.Red
                         _lview.Items(item.Index).SubItems(0).Text = "Err"

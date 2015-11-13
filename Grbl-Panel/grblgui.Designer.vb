@@ -1251,7 +1251,7 @@ Partial Class GrblGui
         'lvColGCode
         '
         Me.lvColGCode.Text = "GCode"
-        Me.lvColGCode.Width = 459
+        Me.lvColGCode.Width = 400
         '
         'btnFileStop
         '

@@ -242,6 +242,7 @@ Public Class GrblGui
                 jogging.enableJogging(False)
                 position.enablePosition(False)
                 btnFileSelect.Enabled = False
+                btnFileSend.Enabled = False
                 offsets.enableOffsets(False)
                 state.EnableState(False)
                 settings.EnableState(False)
